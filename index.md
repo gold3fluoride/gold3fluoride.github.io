@@ -4,12 +4,19 @@ layout: homepage
 
 ## About Me
 
-I am a student.
+I am a student. 
 
 ## Research Interests
 
 - **Computer Vision:** image recognition, image generation, video captioning
 - **Machine Learning:** meta-learning, incremental learning, transfer learning
+
+## Education
+
+- **Post-Doc** TIFR
+- **Ph.D.** IIT
+- **M.Tech** NIT
+
 
 ## News
 
