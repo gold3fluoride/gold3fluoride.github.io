@@ -13,9 +13,9 @@ I am a student.
 
 ## Education
 
-- **Post-Doc** TIFR
-- **Ph.D.** IIT
-- **M.Tech** NIT
+- **Post-Doc** (2022 - 2025) IIT
+- **Ph.D.** (2015 - 2021) IIT
+- **M.Tech** (2009 - 2010) NIT
 
 
 ## News
