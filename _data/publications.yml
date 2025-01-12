@@ -21,6 +21,6 @@ main:
     notes: Oral Presentation
     image: ./assets/img/teaser_example.png
 
- - title: Numerical investigation of unsteady flow across tandem square cylinders near a moving wall at Re = 100, Case Studies in Thermal Engineering (CSTE), 26, 101042 (Elsevier, Impact factor: 4.724), 2021
-   authors: Rajpoot, Rajendra S., Anirudh, K., and Dhinakaran, S.
+ - title: "Numerical investigation of unsteady flow across tandem square cylinders near a moving wall at Re = 100, Case Studies in Thermal Engineering, 26, 101042, 2021"
+   authors: <strong> Rajpoot, Rajendra S.<strong>, Anirudh, K., and Dhinakaran, S.
    pdf: ./assets/sample-1.pdf
