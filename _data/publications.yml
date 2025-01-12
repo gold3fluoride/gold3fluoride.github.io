@@ -18,11 +18,18 @@ main:
 
   - title: Rajpoot, R. S., & Dhinakaran, S. (2017). Forced convective heat transfer from a semicircular cylinder in the vicinity of a plane wall under shear flow. Proceedings of the 24th National and 2nd International ISHMT-ASTFE Heat and Mass Transfer Conference. Begel House Inc.
     pdf: https://www.dl.begellhouse.com/references/497665e8310dfd2d,6e9515933d4aa1cf,0e59fd83077c7539.html
-    notes: Conference Proceedings (4/5)
+    notes: Conference proceedings (4/5)
 
   - title: Rajpoot, R. S., & Dhinakaran, S. (2017). A numerical study on flow characteristics around two square cylinders in tandem arrangement near a moving plane wall. International Conference on Advances in Mechanical Engineering Sciences, 2017. Institute for Engineering Research and Publication. (Paper ID - ICAMES_21439)
-    pdf: http://doidirectory.com/index.php
-    notes: Conference Proceedings (3/5)
+    #pdf: http://doidirectory.com/index.php
+    notes: Conference proceedings (3/5)
+
+  - title: Rajput, R. S., & Bhagoria, J. L. (2010). Study of heat transfer and friction characteristics of various artificial roughness in solar air heater duct by using computational fluid dynamics (CFD) software. International Conference on Advances in Renewable Energy, 1.0, 203-209. (Paper ID - ICARE-048)
+    notes: Conference proceedings (2/5)
+
+  - title: Rajput, R. S., & Bhagoria, J. L. (2010). Computational fluid dynamics simulation of solar air heater. International Conference on Advances in Renewable Energy, 1.0, 393-400. (Paper ID - ICARE-091)
+    notes: Conference Proceedings (1/5)
+
 
   #- title: Continual Learning for Abdominal Multi-Organ and Tumor Segmentation
     #authors: Yixiao Zhang, Xinyi Li, Huimiao Chen, Alan Yuille, <strong>Yaoyao Liu*</strong>, Zongwei Zhou* (*Corresponding authors)
