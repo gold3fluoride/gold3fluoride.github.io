@@ -21,6 +21,6 @@ main:
     notes: Oral Presentation
     image: ./assets/img/teaser_example.png
 
- -  title: Numerical investigation of unsteady flow across tandem square cylinders near a moving wall at Re = 100, Case Studies in Thermal Engineering, 26, 101042, 2021.
+  - title: Numerical investigation of unsteady flow across tandem square cylinders near a moving wall at Re = 100, Case Studies in Thermal Engineering, 26, 101042, 2021.
     authors: Rajpoot, Rajendra S.
     pdf: ./assets/sample-1.pdf
