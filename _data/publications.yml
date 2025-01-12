@@ -1,11 +1,9 @@
 main:
 
-  - title: Numerical investigation of unsteady flow across tandem square cylinders near a moving wall at Re = 100, Case Studies in Thermal Engineering, 26, 101042, 2021.
-    #authors: Rajpoot, Rajendra S.
+  - title: Rajpoot, R. S., Anirudh, K., & Dhinakaran, S. (2021). Numerical investigation of unsteady flow across tandem square cylinders near a moving wall at Re= 100. Case Studies in Thermal Engineering, 26, 101042.
+    #authors: Rajpoot, Rajendra S., Anirudh, K., and Dhinakaran, S.
+    #page: https://doi.org/10.1016/j.csite.2021.101042
     #pdf: ./assets/sample-1.pdf
-    authors: Rajpoot, Rajendra S., Anirudh, K., and Dhinakaran, S.
-    doi: https://doi.org/10.1016/j.csite.2021.101042
-    pdf: ./assets/sample-1.pdf
 
   #- title: Continual Learning for Abdominal Multi-Organ and Tumor Segmentation
     #authors: Yixiao Zhang, Xinyi Li, Huimiao Chen, Alan Yuille, <strong>Yaoyao Liu*</strong>, Zongwei Zhou* (*Corresponding authors)
