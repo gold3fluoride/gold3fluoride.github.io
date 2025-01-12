@@ -4,12 +4,15 @@ main:
     #authors: Rajpoot, Rajendra S., Anirudh, K., and Dhinakaran, S.
     pdf: https://doi.org/10.1016/j.csite.2021.101042
     #pdf: ./assets/sample-1.pdf
+    notes: Journal article
     
   - title: (2) Rajpoot, R. S., Dhinakaran, S., & Alam, M. (2021). Numerical analysis of mixed convective heat transfer from a square cylinder utilizing nanofluids with multi-phase modelling approach. Energies, 14(17), 5485.
     pdf: https://doi.org/10.3390/en14175485
+    notes: Journal article
 
   - title: (1) Rajpoot, R. S., Anirudh, K., & Dhinakaran, S. (2021). On the effects of orientation on flow and heat transfer from a semi-circular cylinder near a stationary wall. Case Studies in Thermal Engineering, 26, 100967.
     pdf: https://doi.org/10.1016/j.csite.2021.100967
+    notes: Journal article
 
   #- title: Continual Learning for Abdominal Multi-Organ and Tumor Segmentation
     #authors: Yixiao Zhang, Xinyi Li, Huimiao Chen, Alan Yuille, <strong>Yaoyao Liu*</strong>, Zongwei Zhou* (*Corresponding authors)
