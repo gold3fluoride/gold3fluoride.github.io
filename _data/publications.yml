@@ -1,10 +1,8 @@
 main:
       
   - title: (3) Rajpoot, R. S., Anirudh, K., & Dhinakaran, S. (2021). Numerical investigation of unsteady flow across tandem square cylinders near a moving wall at Re= 100. Case Studies in Thermal Engineering, 26, 101042.
-    #authors: Rajpoot, Rajendra S., Anirudh, K., and Dhinakaran, S.
     notes: Journal article
     pdf: https://doi.org/10.1016/j.csite.2021.101042
-    #pdf: ./assets/sample-1.pdf
     
   - title: (2) Rajpoot, R. S., Dhinakaran, S., & Alam, M. (2021). Numerical analysis of mixed convective heat transfer from a square cylinder utilizing nanofluids with multi-phase modelling approach. Energies, 14(17), 5485.
     pdf: https://doi.org/10.3390/en14175485
@@ -32,7 +30,6 @@ main:
   - title: (1) Rajput, R. S., & Bhagoria, J. L. (2010). Computational fluid dynamics simulation of solar air heater. International Conference on Advances in Renewable Energy, 1.0, 393-400. (Paper ID: ICARE-091)
     notes: Conference proceedings
     
-
   #- title: Continual Learning for Abdominal Multi-Organ and Tumor Segmentation
     #authors: Yixiao Zhang, Xinyi Li, Huimiao Chen, Alan Yuille, <strong>Yaoyao Liu*</strong>, Zongwei Zhou* (*Corresponding authors)
     #conference_short: MICCAI
