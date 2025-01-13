@@ -8,7 +8,7 @@ I am a student.
 
 ## Research Interests
 
-<p style="color: blue;">Yet to be updated...</p> 
+- <p style="color: blue;">Yet to be updated...</p> 
 
 <!-- - **Computer Vision:** image recognition, image generation, video captioning - **Machine Learning:** meta-learning, incremental learning, transfer learning -->
 
