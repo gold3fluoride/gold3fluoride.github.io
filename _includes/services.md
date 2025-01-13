@@ -1,6 +1,6 @@
 ## Services
 
-<p>yet to be updated...</p>
+<p>Yet to be updated...</p>
 
 <!--
 <h4 style="margin:0 10px 0;">Conference Reviewers</h4>
