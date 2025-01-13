@@ -6,7 +6,7 @@
 {% for link in site.data.publications.main %}
 
 <li style="margin-bottom: 1rem;"> <!-- Added margin-bottom to ensure consistent spacing -->
-<div class="pub-row">
+<div class="pub-row" style="display: flex; flex-direction: column; justify-content: space-between;"> <!-- Ensured consistent spacing -->
   <!-- Publication details container -->
   <div class="col-sm-9" style="position: relative;padding-right: 15px;padding-left: 20px;">
       <!-- Publication title -->
@@ -50,6 +50,7 @@
 
 </ol>
 </div>
+
 
 <!--
 <h2 id="publications" style="margin: 2px 0px -15px;">Publications</h2>
