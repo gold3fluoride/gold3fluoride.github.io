@@ -1,11 +1,10 @@
-{% remove the uneven spacing  and publication image%}
 <h2 id="publications" style="margin: 2px 0px -15px;">Publications</h2>
 
 <div class="publications">
 <ol class="bibliography">
 
 {% for link in site.data.publications.main %}
-
+{% this edited script remove the uneven spacing and publication image%}
 <li style="margin-bottom: 1rem;"> <!-- Added margin-bottom to ensure consistent spacing -->
 <div class="pub-row">
   <!-- Publication details container -->
