@@ -29,6 +29,10 @@ I am a student.
 - **Research Experience** (2022 - till date) 
 - **Teaching** (2011 - 2014) 
 
+{% include_relative _includes/publications.md %}
+
+{% include_relative _includes/services.md %}
+
 ##  Lectures/Workshop/Training Programmes Attended
 
 - <p style="color: blue;">Yet to be updated...</p>
@@ -36,7 +40,3 @@ I am a student.
 ## National/International Courses Attended
 
 - <p style="color: blue;">Yet to be updated...</p>
-
-{% include_relative _includes/publications.md %}
-
-{% include_relative _includes/services.md %}
