@@ -20,7 +20,7 @@ I am a student.
 
 ## Education
 
-- **Post-Doc** (2022 - 2025) 
+- **Post-Doc** (2022 - till date) 
 - **Ph.D.** (2015 - 2021) IIT
 - **M.Tech** (2009 - 2010) NIT
 
@@ -31,8 +31,6 @@ I am a student.
 
 {% include_relative _includes/publications.md %}
 
-{% include_relative _includes/services.md %}
-
 ##  Lectures/Workshop/Training Programmes Attended
 
 - <p style="color: blue;">Yet to be updated...</p>
@@ -40,3 +38,5 @@ I am a student.
 ## National/International Courses Attended
 
 - <p style="color: blue;">Yet to be updated...</p>
+
+{% include_relative _includes/services.md %}
