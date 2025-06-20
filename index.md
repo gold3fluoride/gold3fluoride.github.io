@@ -21,9 +21,9 @@ Iâ€™ve qualified GATE multiple times and bring a blend of research, creativityâ€
 
 ## Education
 
-- **Post-Doc** (2022 - till date) 
-- **Ph.D.** (2015 - 2021) IIT
-- **M.Tech** (2009 - 2010) NIT
+- **Post-Doc** (August 2022 - till date) TIFR-Centre for Applicable Mathematics, Bangalore, Karnataka, India.
+- **Ph.D.** (December 2014 - November 2021) IIT Indore, Madhya Presdesh, India.
+- **M.Tech** (2009 - 2010) NIT, Bhopal, Madhya Pradesh, India.
 
 ## Exprience
 
