@@ -15,13 +15,13 @@ Iâ€™ve qualified GATE multiple times and bring a blend of research, creativityâ€
 
 ## Research Interests
 
-- <p style="color: blue;">Yet to be updated...</p> 
+- <p style="color: blue;">Geophysical fluid dynamics, Wave-vortex interactions in the ocean, Computational fluid dynamics, Bluff body flows and flow control, Nanofluid-based heat transfer, Flow through porous media, Thermal analysis of solar air heaters</p> 
 
 <!-- - **Computer Vision:** image recognition, image generation, video captioning - **Machine Learning:** meta-learning, incremental learning, transfer learning -->
 
 ## Education
 
-- **Post-Doc** (August 2022 - till date) TIFR-Centre for Applicable Mathematics, Bangalore, Karnataka, India.
+- **Post-Doc** (August 2022 - till date) TIFR-Centre for Applicable Mathematics, Karnataka, India.
 - **Ph.D.** (December 2014 - November 2021) IIT Indore, Madhya Presdesh, India.
 - **M.Tech** (2009 - 2010) NIT, Bhopal, Madhya Pradesh, India.
 
