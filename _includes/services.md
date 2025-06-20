@@ -1,5 +1,12 @@
 ## Services
 
+<ul style="list-style-position: inside; padding-left: 1em;">
+  <li style="color: blue; position: relative; list-style: none;">
+    <span style="color: white; position: absolute; left: -1em;">•</span>
+    Yet to be updated...
+  </li>
+</ul>
+<!--
 <ul style="color: white;">
   <li>Yet to be updated...</li>
 </ul>
