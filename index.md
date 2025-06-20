@@ -4,7 +4,8 @@ layout: homepage
 
 ## About Me
 
-I am a student. 
+I am a Postdoctoral Fellow at TIFR-CAM, Bengaluru, working at the intersection of geophysical fluid dynamics and computational modeling. My research spans wave-vortex interactions, bluff body flows, and energy transport using pseudo-spectral simulations. I hold a Ph.D. in Mechanical Engineering from IIT Indore, where I specialized in heat transfer and computational fluid dynamics.
+I’ve qualified GATE multiple times and bring a blend of research, creativity—like winning the TIFR-CAM logo contest—and teaching experience. There’s much more I could share, but this space is for the brief essentials. 
 
 ## News 
 
