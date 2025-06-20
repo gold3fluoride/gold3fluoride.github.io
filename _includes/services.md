@@ -1,6 +1,6 @@
 ## Services
 
-<ul style="color: blue;">
+<ul style="color: white;">
   <li>Yet to be updated...</li>
 </ul>
 <!--
