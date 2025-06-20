@@ -1,12 +1,14 @@
 ## Services
 
-<ul>
-  <li style="color: blue;">Yet to be updated...</li>
-</ul>
-<!--
 <ul style="color: white;">
   <li>Yet to be updated...</li>
 </ul>
+
+<!--
+<ul>
+  <li style="color: blue;">Yet to be updated...</li>
+</ul>
+
 
 <!--<ul style="list-style-position: inside; padding-left: 1em;">
   <li style="color: blue; position: relative; list-style: none;">
