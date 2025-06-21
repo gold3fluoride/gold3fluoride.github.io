@@ -8,7 +8,7 @@ I am a Postdoctoral Fellow at TIFR-CAM, Bengaluru, working at the intersection o
 
 My academic path spans doctoral and postdoctoral research, teaching, and technical mentoring. I have contributed to peer-reviewed journals, qualified the GATE exam multiple times, and participated in national and international workshops. I am working on high-performance scientific computing, including the parallelization of simulations using Python MPI. 
 
-Creativity has always played a role in my work—from designing logos to building academic websites and contributing to science outreach. This page offers a glimpse; the full story brings together research, teaching, design, and discovery
+Creativity has always played a role in my work—from designing logos to building academic websites and contributing to science outreach. This page offers a glimpse; the full story brings together research, teaching, design, and discovery.
 
 ## Research Interests
 
