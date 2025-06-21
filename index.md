@@ -4,8 +4,11 @@ layout: homepage
 
 ## About Me
 
-I am a Postdoctoral Fellow at TIFR-CAM, Bengaluru, working at the intersection of geophysical fluid dynamics and computational modeling. My research spans wave-vortex interactions, bluff body flows, and energy transport using pseudo-spectral simulations. I hold a Ph.D. in Mechanical Engineering from IIT Indore, where I specialized in heat transfer and computational fluid dynamics.
-I’ve qualified GATE multiple times and bring a blend of research, creativity—like winning the TIFR-CAM logo contest—and teaching experience. There’s much more I could share, but this space is for the brief essentials. 
+I am a Postdoctoral Fellow at TIFR-CAM, Bengaluru, working at the intersection of geophysical fluid dynamics and computational modeling. My research focuses on wave–vortex interactions using pseudo-spectral simulations. I hold a Ph.D. in Mechanical Engineering from IIT Indore, where I specialized in heat transfer and bluff body flow control using computational fluid dynamics. 
+
+My academic path spans doctoral and postdoctoral research, teaching, and technical mentoring. I have contributed to peer-reviewed journals, qualified the GATE exam multiple times, and participated in national and international workshops. I am working on high-performance scientific computing, including the parallelization of simulations using Python MPI. 
+
+Creativity has always played a role in my work—from designing logos to building academic websites and contributing to science outreach. This page offers a glimpse; the full story brings together research, teaching, design, and discovery
 
 ## Research Interests
 
@@ -22,7 +25,7 @@ I’ve qualified GATE multiple times and bring a blend of research, creativity�
 
 - **Post-Doc** (August 2022 - till date) TIFR-Centre for Applicable Mathematics, Karnataka, India.
 - **Ph.D.** (December 2014 - November 2021) IIT Indore, Madhya Presdesh, India.
-- **M.Tech** (2009 - 2010) NIT, Bhopal, Madhya Pradesh, India.
+- **M.Tech** (2009 - 2010) NIT Bhopal, Madhya Pradesh, India.
 
 ## Exprience
 
@@ -31,7 +34,7 @@ I’ve qualified GATE multiple times and bring a blend of research, creativity�
 
 {% include_relative _includes/publications.md %}
 
-##  Lectures/Workshop/Training Programmes Attended
+<!--##  Lectures/Workshop/Training Programmes Attended
 
 - <p style="color: blue;">Yet to be updated...</p>
 
