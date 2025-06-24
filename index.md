@@ -2,6 +2,10 @@
 layout: homepage
 ---
 
+<img src="./assets/img/20250622_194357_1.png" alt="My Research Image" width="600" style="margin-bottom: 40px;" />
+
+<img src="./assets/img/your_next_image.png" alt="Second Image" width="600" />
+
 ## About Me
 
 I am a Postdoctoral Fellow at TIFR-CAM, Bengaluru, working at the intersection of geophysical fluid dynamics and computational modeling. My research focuses on wave–vortex interactions using pseudo-spectral methods. I hold a Ph.D. in Mechanical Engineering from IIT Indore, where I specialized in heat transfer and bluff body flow control using computational fluid dynamics (CFD). My research explored natural, forced, and mixed convection in complex geometries, employing methods such as the finite volume and lattice Boltzmann approaches. 
