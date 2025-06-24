@@ -45,7 +45,7 @@ Creativity has always played a role in my work—from designing logos to buildin
 
 {% include_relative _includes/services.md %}
 
-## News 
+<!-- ## News 
 
 - <p style="color: blue;">Yet to be updated...</p>
 
