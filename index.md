@@ -22,16 +22,17 @@ Creativity has always played a role in my work—from designing logos to buildin
 
 ## Education
 
-- **Post-Doc** (August 2022 - till date) TIFR-Centre for Applicable Mathematics, Karnataka, India.
 - **Ph.D.** (December 2014 - November 2021) IIT Indore, Madhya Presdesh, India.
 - **M.Tech** (2009 - 2010) NIT Bhopal, Madhya Pradesh, India.
 
 ## Exprience
 
-- **Research Experience** (2022 - till date) 
+- **Post-Doc** (August 2022 - till date) TIFR-Centre for Applicable Mathematics, Karnataka, India.
 - **Teaching** (2011 - 2014).
-- 
+  
 {% include_relative _includes/publications.md %}
+
+<!-- - **Research Experience** (2022 - till date) 
 
 <!--##  Lectures/Workshop/Training Programmes Attended
 
