@@ -2,7 +2,7 @@
 layout: homepage
 ---
 
-<img src="./assets/img/20250622_194357_1.png" alt="My Research Image" width="800" style="margin-bottom: 80px;" />
+<!-- <img src="./assets/img/20250622_194357_1.png" alt="My Research Image" width="800" style="margin-bottom: 80px;" /> -->
 
 <!-- <img src="./assets/img/your_next_image.png" alt="Second Image" width="600" /> -->
 
