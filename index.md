@@ -35,18 +35,18 @@ Creativity has always played a role in my work—from designing logos to buildin
 
 <!-- - **Research Experience** (2022 - till date) 
 
-<!--##  Lectures/Workshop/Training Programmes Attended -->
-
-<!-- - <p style="color: blue;">Yet to be updated...</p> -->
-
-<!-- ## National/International Courses Attended -->
-
-<!-- - <p style="color: blue;">Yet to be updated...</p> -->
-
-<!-- {% include_relative _includes/services.md %} -->
-
-<!-- ## News 
+##  Lectures/Workshop/Training Programmes Attended 
 
 - <p style="color: blue;">Yet to be updated...</p>
 
-<!-- - **[Feb. 2020]** Our paper about incremental learning is accepted to CVPR 2020. - **[Feb. 2020]** We will host the ACM Multimedia Asia 2020 conference in Singapore! - **[Sept. 2019]** Our paper about few-shot learning is accepted to NeurIPS 2019. - **[Mar. 2019]** Our paper about few-shot learning is accepted to CVPR 2019. -->
+## National/International Courses Attended 
+
+- <p style="color: blue;">Yet to be updated...</p>
+
+{% include_relative _includes/services.md %}
+
+## News 
+
+- <p style="color: blue;">Yet to be updated...</p>
+
+- **[Feb. 2020]** Our paper about incremental learning is accepted to CVPR 2020. - **[Feb. 2020]** We will host the ACM Multimedia Asia 2020 conference in Singapore! - **[Sept. 2019]** Our paper about few-shot learning is accepted to NeurIPS 2019. - **[Mar. 2019]** Our paper about few-shot learning is accepted to CVPR 2019.
