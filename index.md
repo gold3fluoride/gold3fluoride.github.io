@@ -30,7 +30,7 @@ Creativity has always played a role in my work—from designing logos to buildin
 
 ## Exprience
 
-- **Post-Doc** (August 2022 - till date) TIFR-Centre for Applicable Mathematics, Karnataka, India.
+- **Post-Doc** (August 2022 - till date) TIFR, Karnataka, India.
 - **Teaching** (2011 - 2014).
   
 {% include_relative _includes/publications.md %}
