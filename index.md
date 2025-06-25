@@ -15,7 +15,6 @@ Creativity has always played a role in my work—from designing logos to buildin
 ## Research Interests
 
 <img src="./assets/img/20250622_193947.png" alt="My Research  Interests" width="600" style="margin-bottom: 40px;" />
-
 - <p style="color: blue;">Geophysical fluid dynamics</p> 
 - <p style="color: blue;">Wave-vortex interactions in the ocean</p>
 - <p style="color: blue;">Computational fluid dynamics</p>
