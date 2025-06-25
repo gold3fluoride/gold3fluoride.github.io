@@ -36,6 +36,7 @@ Creativity has always played a role in my work—from designing logos to buildin
   
 {% include_relative _includes/publications.md %}
 
+## Knowledge Section (Source: Internet)
 <img src="./assets/img/DSC887.gif" alt="Animation 1" width="300" style="margin: 10px;" />
 <img src="./assets/img/DSC154.gif" alt="Animation 2" width="300" style="margin: 10px;" />
 <img src="./assets/img/DSC400.gif" alt="Animation 3" width="300" style="margin: 10px;" />
