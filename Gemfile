@@ -7,6 +7,9 @@ group :jekyll_plugins do
   gem 'jekyll-redirect-from'
   gem 'jemoji'
   gem 'webrick', '~> 1.8'
+  gem 'tzinfo'
+  gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
+  gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 end
 
 gem 'github-pages'

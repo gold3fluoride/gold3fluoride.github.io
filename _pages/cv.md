@@ -11,35 +11,43 @@ redirect_from:
 
 Education
 ======
-* Ph.D in Version Control Theory, GitHub University, 2018 (expected)
-* M.S. in Jekyll, GitHub University, 2014
-* B.S. in GitHub, GitHub University, 2012
+* B.S. in Computer Science and Technology, USTC, 2028 (expected)
 
-Work experience
+Research experience
 ======
-* Spring 2024: Academic Pages Collaborator
-  * GitHub University
-  * Duties includes: Updates and improvements to template
-  * Supervisor: The Users
+* 2025.9 - 2026.3 (expected): Research Internship: Personalized Children’s Stories Generation
+  * @USTC
+  * Advisor: Jiancan WU, Xiangnan HE.
+  * Partially funded by the New Lotus Foundation at SGY.
+  * Brief Introduction: This study combines MoE architecture with RL to train LLMs towards generating stories that fit the user’s taste in various aspects. 
 
-* Fall 2015: Research Assistant
-  * GitHub University
-  * Duties included: Merging pull requests
-  * Supervisor: Professor Hub
-
-* Summer 2015: Research Assistant
-  * GitHub University
-  * Duties included: Tagging issues
-  * Supervisor: Professor Git
+* 2025.12 - 2026.5/6 (expected): Research Internship: Research Paper Comprehension Agent based on Reinforced Learning
+  * @USTC
+  * Advisor: Yong LIU, Wei HU.
   
 Skills
 ======
-* Skill 1
-* Skill 2
-  * Sub-skill 2.1
-  * Sub-skill 2.2
-  * Sub-skill 2.3
-* Skill 3
+* C++ coding & intermediate level in algorithms
+* Python
+  * Familiar with Pytorch and useful tools including transformers and PyG.
+  * Familiar with deep learning, RL algorithms, and multi-agent frameworks.
+  * Experience in implementing SFT and RL.
+* Basic knowledge in hardware programming (e.g. System Verilog HDL)
+* English communicative skills (TOEFL:112, GRE 164+170+4)
+
+Honors and awards
+=====
+* 2025.12 **National Scholarship (Top 1% at SGY)**;
+* 2025.11 Second Prize (Provincial) , Award on The 14th Chinese Mathematics Competitions (Non-Math Major);
+* 2025.11 **Silver Prize**, 2025 ICPC Asia Wuhan Regional Contest;
+* 2025.10 **Silver Prize**, 2025 ICPC Asia Chengdu Regional Contest;
+* 2025.09 Hua Xia Talent Program in Computer Science and Technology Scholarship;
+* 2025.01 Language and Academic Standardized Test Scholarships at SGY;
+* 2024.12 **Bronze Prize**, USTC Freshmen Scholarship.
+
+
+
+<!--
 
 Publications
 ======
@@ -58,7 +66,9 @@ Teaching
   <ul>{% for post in site.teaching reversed %}
     {% include archive-single-cv.html %}
   {% endfor %}</ul>
+
+-->
   
 Service and leadership
 ======
-* Currently signed in to 43 different slack teams
+* 2024.9-Present: Administrative Class Organization Commissary
