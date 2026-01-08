@@ -23,7 +23,7 @@ repository               : "gold3fluoride/wangxinzhe.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "profile.png"
+  avatar           : "AuF3.png"
   name             : "Xinzhe Wang"
   pronouns         : # example: "she/her"  
   bio              : "Sophomore in CS major, at USTC"
