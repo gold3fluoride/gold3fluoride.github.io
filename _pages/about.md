@@ -10,13 +10,13 @@ redirect_from:
 
 ## About me
 
-Welcome! I am Xinzhe WANG (王歆喆), currently in my second year at the School of the Gifted Young, University of Science and Technology of China.
+Welcome! I am Xinzhe WANG (王歆喆), currently in my second year at the School of the Gifted Young, University of Science and Technology of China (USTC).
 
 ### Basic information:
 * I major in Computer Science and Technology. 
 * I am a member of the Hua Xia Talent Program in Computer Science and Technology.
 * My current research interests lie in Multi-Agent Systems and Reinforcement Learning.
-* I am open to cross-disciplinary research, esp. AI4Chem.
+* I have a strong background in Chemistry as well, and I am open to cross-disciplinary research, esp. AI4Chem.
 
 
 
