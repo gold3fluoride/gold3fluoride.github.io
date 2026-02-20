@@ -7,12 +7,33 @@ redirect_from:
   - /about.html
 ---
 
+<style>
+  .academic-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #2c3e50;
+    color: white !important;
+    text-decoration: none !important;
+    border-radius: 4px;
+    font-family: serif;
+    transition: 0.3s;
+  }
+  .academic-button:hover {
+    background-color: #34495e;
+    transform: translateY(-2px);
+  }
+</style>
+
 
 ## About me
 
 Welcome! I am Xinzhe WANG (王歆喆), currently in my second year at the School of the Gifted Young, University of Science and Technology of China (USTC).
 
-<a href="/assets/CV_Xinzhe_Wang_0212.pdf" target="_blank" rel="noopener">Open my CV (PDF)</a>
+<a href="/assets/CV_Xinzhe_Wang_0218.pdf" target="_blank" rel="noopener">Open my CV (PDF)</a>
+
+<a href="/assets/CV_Xinzhe_Wang_0218.pdf" class="academic-button" target="_blank" rel="noopener">
+  <span class="icon">📄</span> Download Curriculum Vitae
+</a>
 
 ### Basic information:
 * I major in Computer Science and Technology. 
