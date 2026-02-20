@@ -29,7 +29,6 @@ redirect_from:
 
 Welcome! I am Xinzhe WANG (王歆喆), currently in my second year at the School of the Gifted Young, University of Science and Technology of China (USTC).
 
-<a href="/assets/CV_Xinzhe_Wang_0218.pdf" target="_blank" rel="noopener">Open my CV (PDF)</a>
 
 <a href="/assets/CV_Xinzhe_Wang_0218.pdf" class="academic-button" target="_blank" rel="noopener">
   <span class="icon">📄</span> Download Curriculum Vitae
