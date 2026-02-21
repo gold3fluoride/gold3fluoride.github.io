@@ -17,30 +17,52 @@ redirect_from:
     border-radius: 4px;
     font-family: serif;
     transition: 0.3s;
+    margin: 5px 10px 15px 0; /* Added margin for neat spacing of multiple buttons */
   }
   .academic-button:hover {
     background-color: #34495e;
     transform: translateY(-2px);
   }
+  .icon {
+    margin-right: 5px;
+  }
 </style>
 
+## Welcome!
 
-## About me
+I am **Xinzhe WANG (王歆喆)**, currently in my second year at the **School of the Gifted Young, University of Science and Technology of China (USTC)**. As a major in Computer Science and Technology, I am honored to be a member of the Hua Xia Talent Program, which fosters innovation and advanced research skills.
 
-Welcome! I am Xinzhe WANG (王歆喆), currently in my second year at the School of the Gifted Young, University of Science and Technology of China (USTC).
+<div style="margin-top: 20px;">
+  <a href="/assets/CV_Xinzhe_Wang_0218.pdf" class="academic-button" target="_blank" rel="noopener">
+    <span class="icon">📄</span> Download Curriculum Vitae
+  </a>
+  <a href="mailto:wangxinzheus@gmail.com" class="academic-button">
+    <span class="icon">✉️</span> Contact Me (Email)
+  </a>
+</div>
 
+---
 
-<a href="/assets/CV_Xinzhe_Wang_0218.pdf" class="academic-button" target="_blank" rel="noopener">
-  <span class="icon">📄</span> Download Curriculum Vitae
-</a>
+### 🔬 Research Interests
 
-### Basic information:
-* I major in Computer Science and Technology. 
-* I am a member of the Hua Xia Talent Program in Computer Science and Technology.
-* My current research interests lie in Multi-Agent Systems and Reinforcement Learning.
-* I have a strong background in Chemistry as well, and I am open to cross-disciplinary research, esp. AI4Chem.
+My primary focus is on developing intelligent systems that can learn, adapt, and interact within complex environments and align with human needs. 
 
+* **Core Computer Science:** Multi-Agent Systems and Reinforcement Learning.
+* **Interdisciplinary Focus:** Having a strong foundational background in Chemistry, I am passionate about cross-disciplinary research. I am actively exploring the **AI4Chem** domain, leveraging artificial intelligence to solve complex chemical problems and accelerate scientific discovery.
 
+---
+
+### 🎓 Education & Affiliations
+
+* **University of Science and Technology of China (USTC)** | *Present*
+    * School of the Gifted Young
+    * B.S. in Computer Science and Technology *(Expected)*
+    * *Affiliation:* Hua Xia Talent Program in Computer Science and Technology
+
+---
+
+### 📰 Recent News
+* **[Jan 2026]** Launched my homepage
 
 <!-- 
 This is the front page of a website that is powered by the [Academic Pages template](https://github.com/academicpages/academicpages.github.io) and hosted on GitHub pages. [GitHub pages](https://pages.github.com) is a free service in which websites are built and hosted from code and data stored in a GitHub repository, automatically updating when a new commit is made to the repository. This template was forked from the [Minimal Mistakes Jekyll Theme](https://mmistakes.github.io/minimal-mistakes/) created by Michael Rose, and then extended to support the kinds of content that academics have: publications, talks, teaching, a portfolio, blog posts, and a dynamically-generated CV. Incidentally, these same features make it a great template for anyone that needs to show off a professional template!
