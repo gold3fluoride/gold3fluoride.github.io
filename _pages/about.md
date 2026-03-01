@@ -33,7 +33,7 @@ redirect_from:
 I am **Xinzhe WANG (王歆喆)**, currently in my second year at the **School of the Gifted Young, University of Science and Technology of China (USTC)**. As a major in Computer Science and Technology, I am honored to be a member of the Hua Xia Talent Program, which fosters innovation and advanced research skills.
 
 <div style="margin-top: 20px;">
-  <a href="/assets/CV_Xinzhe_Wang_0218.pdf" class="academic-button" target="_blank" rel="noopener">
+  <a href="/files/CV_Xinzhe_Wang_0301.pdf" class="academic-button" target="_blank" rel="noopener">
     <span class="icon">📄</span> Download Curriculum Vitae
   </a>
   <a href="mailto:wangxinzheus@gmail.com" class="academic-button">
