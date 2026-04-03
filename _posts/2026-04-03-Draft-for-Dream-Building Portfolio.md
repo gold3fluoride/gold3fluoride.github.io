@@ -1,7 +1,7 @@
 ---
 title: 'Draft for Dream Building Porfolio'
 date: 2026-04-03
-permalink: /posts/2026/04/Draft%20for%20Dream%Building%Porfolio/
+permalink: /posts/2026/04/Draft-for-Dream-Building-Porfolio/
 tags:
   - Life
   - Article
