@@ -11,7 +11,7 @@ This article was written in Chinese for the Dream Building Porfolio at SGY.
 
 
 
-<details>
+<details markdown="1">
   <summary>Honestly I had little idea what to write about.</summary>
 
   ## 带着问题前行：在不确定中寻路
