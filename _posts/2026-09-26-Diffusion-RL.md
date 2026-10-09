@@ -1,6 +1,5 @@
 ---
 layout: blog_post
-
 title: 'Learning and Thinking about Diffusion RL'
 date: 2026-09-26
 tags:
