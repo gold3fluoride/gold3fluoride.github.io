@@ -145,10 +145,19 @@
     font-size: 1.1em;
 }
 
-/* Ensure math formulas are properly displayed */
-.katex-display .katex {
-    display: inline-block;
+/* Keep long equations scrollable without shrinking the tag's positioning area. */
+.katex-display > .katex {
+    display: block;
+    position: relative;
+    width: max-content;
+    min-width: 100%;
     white-space: nowrap;
+}
+
+/* KaTeX positions numeric tags at the right edge; reserve space for them. */
+.katex-display > .katex > .katex-html:has(> .tag) {
+    box-sizing: border-box;
+    padding-inline: 4em;
 }
 
 /* Fix for math formula containers */
