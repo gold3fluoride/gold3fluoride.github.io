@@ -8,7 +8,7 @@ tags:
   - Article
 ---
 
-This is still a developing draft.
+This is still a developing draft. But welcome to take a look anyway. 
 
 ## 0. Foreword
 
