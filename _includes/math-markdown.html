@@ -1,0 +1,40 @@
+{%- comment -%}
+Protect conventional inline math before Kramdown parses the Markdown.
+Capture the body after the introductory paragraph (to preserve Jekyll's
+automatic excerpt) and pass it here from inside HTML comments. Editor previews
+still see ordinary $inline$ and $$display$$ math. Backtick code spans and
+fences pass through unchanged; escape literal dollars as \$.
+{%- endcomment -%}
+{%- assign chunks = include.content | append: 'MATH_MARKDOWN_END_72c4d1' | split: '`' -%}
+{%- for chunk in chunks -%}
+  {%- assign code_chunk = forloop.index0 | modulo: 2 -%}
+  {%- if code_chunk == 0 -%}
+    {%- assign prose = chunk
+      | remove: 'MATH_MARKDOWN_END_72c4d1'
+      | replace: '\$', 'MATH_MARKDOWN_LITERAL_DOLLAR_72c4d1'
+      | replace: '$$', 'MATH_MARKDOWN_DISPLAY_DOLLAR_72c4d1'
+      | append: 'MATH_MARKDOWN_END_72c4d1'
+      | split: '$'
+    -%}
+    {%- capture protected_prose -%}
+      {%- for part in prose -%}
+        {%- assign math_part = forloop.index0 | modulo: 2 -%}
+        {%- if math_part == 0 -%}
+          {{- part -}}
+        {%- elsif forloop.last -%}
+          ${{- part -}}
+        {%- else -%}
+          $${{- part -}}$$
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {{- protected_prose
+      | remove: 'MATH_MARKDOWN_END_72c4d1'
+      | replace: 'MATH_MARKDOWN_DISPLAY_DOLLAR_72c4d1', '$$'
+      | replace: 'MATH_MARKDOWN_LITERAL_DOLLAR_72c4d1', '<span class="math-literal-dollar">$</span>'
+    -}}
+  {%- else -%}
+    {{- chunk | remove: 'MATH_MARKDOWN_END_72c4d1' -}}
+  {%- endif -%}
+  {%- unless forloop.last -%}`{%- endunless -%}
+{%- endfor -%}
