@@ -30,7 +30,7 @@ I was amazed by [**DiffusionNFT**](https://arxiv.org/abs/2509.16117) for its cle
 We know the canonical regularized RL objective:
 
 $$
-J(\theta) = \mathbb{E}_{P_\theta} [A] - \beta KL(P_\theta  ||  P_\text{ref}), \tag{1}
+J(\theta) = \mathbb{E}_{P_\theta} [A] - \beta KL(P_\theta  \|  P_\text{ref}), \tag{1}
 $$
 
 where the advantage $A$ is determined solely by the terminal clean image $x_0$. Normally for PPO (in LLMs) we would like to estimate the likelihood $\nabla{\log{P_\theta(x_0)}}$, but **diffusion never provides such a convenience**. For a clean sample $x_0$ we have innumerable paths to reach it, namely calculating the marginal: $P_\theta(x_0) = \int{P_\theta(x_{[0:1]}) \mathcal{D}x_{[0:1]}}$. Over continuous paths that integral is intractable and therefore the endpoint score function $\nabla{\log{P_\theta(x_0)}}$ cannot be estimated reliably.
@@ -104,9 +104,9 @@ where $\Delta \mu := \mu_\theta - \mu_q$, simply how far is the current drift aw
 
 $$
 \begin{align}
-\log \frac{p_\theta (y_{r+\Delta r}  \mid  y_r)}{q(y_{r+\Delta r}  \mid  y_r)} & = - \frac{1}{2g_r^2 \Delta r} ( || y_{r+\Delta r}-y_r-\mu_\theta \Delta r || ^2 -  || y_{r+\Delta r}-y_r-\mu_q \Delta r || ^2) \\
-& =  - \frac{1}{2g_r^2 \Delta r} ( || g_r \sqrt{\Delta r} \epsilon_r - \Delta \mu \Delta r  || ^2 -  || g_r \sqrt{\Delta r} \epsilon_r || ^2) \\
-& = \frac{\Delta \mu}{g_r}  \sqrt{\Delta r} \epsilon_r - \frac{1}{2}  || \frac{\Delta \mu}{g_r} || ^2 \Delta r.
+\log \frac{p_\theta (y_{r+\Delta r}  \mid  y_r)}{q(y_{r+\Delta r}  \mid  y_r)} & = - \frac{1}{2g_r^2 \Delta r} ( \| y_{r+\Delta r}-y_r-\mu_\theta \Delta r \| ^2 -  \| y_{r+\Delta r}-y_r-\mu_q \Delta r \| ^2) \\
+& =  - \frac{1}{2g_r^2 \Delta r} ( \| g_r \sqrt{\Delta r} \epsilon_r - \Delta \mu \Delta r  \| ^2 -  \| g_r \sqrt{\Delta r} \epsilon_r \| ^2) \\
+& = \frac{\Delta \mu}{g_r}  \sqrt{\Delta r} \epsilon_r - \frac{1}{2}  \| \frac{\Delta \mu}{g_r} \| ^2 \Delta r.
 \end{align}
 \tag{9}
 $$
@@ -125,14 +125,14 @@ $$
 \begin{align}
 \log \frac{P_\theta(\tau)}{Q(\tau)} &= \log \prod_r \frac{p_\theta (y_{r+\Delta r}  \mid  y_r)}{q(y_{r+\Delta r}  \mid  y_r)} \\
 &= \sum_r \log \frac{p_\theta (y_{r+\Delta r}  \mid  y_r)}{q(y_{r+\Delta r}  \mid  y_r)}\\
-&= \sum_r (\frac{\Delta \mu(y_r,r)}{g_r}  \sqrt{\Delta r} \epsilon_r - \frac{1}{2}  || \frac{\Delta \mu(y_r,r)}{g_r} || ^2 \Delta r)
+&= \sum_r (\frac{\Delta \mu(y_r,r)}{g_r}  \sqrt{\Delta r} \epsilon_r - \frac{1}{2}  \| \frac{\Delta \mu(y_r,r)}{g_r} \| ^2 \Delta r)
 \end{align}\tag{10}
 $$
 
 By letting $\Delta r \rightarrow 0$ we (heuristically) turn that discrete sum into a continuous integral (standard brownian motion $\mathrm{d}W_r = \epsilon_r \sqrt{\Delta r}$):
 
 $$
-\log \frac{\mathrm{d} P_\theta}{\mathrm{d} Q} = \int_0^1 (\frac{\Delta \mu(y_r,r)}{g_r} \mathrm{d}W_r - \frac{1}{2}  || \frac{\Delta \mu(y_r,r)}{g_r} || ^2 \mathrm{d} r) \tag{11}
+\log \frac{\mathrm{d} P_\theta}{\mathrm{d} Q} = \int_0^1 (\frac{\Delta \mu(y_r,r)}{g_r} \mathrm{d}W_r - \frac{1}{2}  \| \frac{\Delta \mu(y_r,r)}{g_r} \| ^2 \mathrm{d} r) \tag{11}
 $$
 
 And Eq.11 is the Girsanov Theorem the 0814 paper is using. The discrete version already tells what we need to know (linear minus quadratic); this is simply a nicer formulation (under regular conditions).
@@ -438,7 +438,7 @@ $$
 \log\hat\pi_\theta(x_0\mid c)
 =
 -\mathbb E_{t,\epsilon}
-[w(t)||v_\theta(x_t,t,c)-(\epsilon-x_0)||^2]
+[w(t)\|v_\theta(x_t,t,c)-(\epsilon-x_0)\|^2]
 +\text{const}.
 \tag{37}
 $$
@@ -459,7 +459,7 @@ $$
 \begin{align}
 \delta \log \hat\pi_\theta(x_0)
 &= -\delta \mathbb E_t
-[w(t)||v_\theta(x_t,t,c)-(\epsilon-x_0)||^2] \\
+[w(t)\|v_\theta(x_t,t,c)-(\epsilon-x_0)\|^2] \\
 &= -2 \mathbb E_t [w(t)(v_\mathrm{old} - v)^\top \delta v_\theta]
 \end{align}
 \tag{39}
@@ -553,9 +553,9 @@ tells us in which direction the policy should move
 $$
 -\frac12
 \int
-||
+\|
 \frac{\Delta\mu_r}{g_r}
-||^2dr.
+\|^2dr.
 $$
 
 on the other hand, tells us how costly a finite displacement is. We deliberately ignored it when taking the first variation because it is second order in $\Delta\mu$. Time to bring it back.
@@ -591,7 +591,7 @@ Under the standard $\eta_t =1$ schedule, we obtain $\Delta\mu = -2\Delta v$, whi
 Remember the Girsanov ratio looked like this:
 
 $$
-\log \frac{\mathrm{d} P_\theta}{\mathrm{d} Q} = \int_0^1 (\frac{\Delta \mu(y_r,r)}{g_r} \mathrm{d}W_r - \frac{1}{2}  || \frac{\Delta \mu(y_r,r)}{g_r} || ^2 \mathrm{d} r) \tag{11}
+\log \frac{\mathrm{d} P_\theta}{\mathrm{d} Q} = \int_0^1 (\frac{\Delta \mu(y_r,r)}{g_r} \mathrm{d}W_r - \frac{1}{2}  \| \frac{\Delta \mu(y_r,r)}{g_r} \| ^2 \mathrm{d} r) \tag{11}
 $$
 
 > ... for simplicity $g_r := g_t$
@@ -603,13 +603,13 @@ $$
 $$
 
 $$
-- \frac12  || \frac{\Delta \mu(y_r,r)}{g_r} || ^2 = - \frac{(1+\eta_t)^2(1-t)}{4t\eta_t} ||{\Delta v_\theta}||^2 \tag{46}
+- \frac12  \| \frac{\Delta \mu(y_r,r)}{g_r} \| ^2 = - \frac{(1+\eta_t)^2(1-t)}{4t\eta_t} \|{\Delta v_\theta}\|^2 \tag{46}
 $$
 
 Abbreviate $\frac{(1+\eta_t)^2(1-t)}{4t\eta_t}$ to $\tilde{w_t}$ we obtain another way of writing Girsanov ratio under the FM SDE, making velocity, which is the central topic in model training, an explicit variable in the equation (Equation 10 in 0814):
 
 $$
-\log \frac{\mathrm{d} P_\theta}{\mathrm{d} Q} = -\int_0^1 \sqrt{2\tilde w_{1-r}} \Delta v_\theta(x_{1-r},1-r)^\top \mathrm{d}W_r - \int_0^1 \tilde w_{1-r} ||\Delta v_\theta(x_{1-r},1-r)||^2 \mathrm{d}r \tag{47}
+\log \frac{\mathrm{d} P_\theta}{\mathrm{d} Q} = -\int_0^1 \sqrt{2\tilde w_{1-r}} \Delta v_\theta(x_{1-r},1-r)^\top \mathrm{d}W_r - \int_0^1 \tilde w_{1-r} \|\Delta v_\theta(x_{1-r},1-r)\|^2 \mathrm{d}r \tag{47}
 $$
 
 also named $M_1(\theta)$ in 0814. Recall Eq. 12 where we connected this ratio (R-N derivative) to the objective we truly care about.
@@ -624,7 +624,7 @@ To obtain a more tractable local form, replace $\exp(M_1)$ by $1+M_1$ and drop t
 
 $$
 \mathcal S_\mathrm{policy}(\theta) := -\mathbb E_Q[A M_1(\theta)]
-= \mathbb E_Q \left[A \int_0^1 \sqrt{2 \tilde w_{1-r}} \Delta v_\theta^\top \mathrm d W_r + A \int_0^1 \tilde w_{1-r} ||\Delta v_\theta||^2 \mathrm d r\right]
+= \mathbb E_Q \left[A \int_0^1 \sqrt{2 \tilde w_{1-r}} \Delta v_\theta^\top \mathrm d W_r + A \int_0^1 \tilde w_{1-r} \|\Delta v_\theta\|^2 \mathrm d r\right]
 \tag{48}
 $$
 
@@ -635,7 +635,7 @@ As in Eq. 18 the stochastic term in this loss turns into $-\mathbb E_Q\int_0^1\n
 $$
 \begin{align}
 \mathcal S_\mathrm{policy}(\theta)
-&= \mathbb E_Q \int_0^1 [(1+\eta_t) \nabla V ^\top\Delta v_\theta + A \tilde w_t ||\Delta v_\theta||^2] \mathrm d t.
+&= \mathbb E_Q \int_0^1 [(1+\eta_t) \nabla V ^\top\Delta v_\theta + A \tilde w_t \|\Delta v_\theta\|^2] \mathrm d t.
 \end{align}
 \tag{49}
 $$
@@ -647,7 +647,7 @@ And here is, in my point of view, the main contribution of 0814 - a major abstra
 
 $$
 - L = \mathbb E \int_0^1 [\hat w_2(\eta_t,t) \widehat{\nabla V} ^\top \Delta v_\theta +
-\hat w_1(A,t) ||\Delta v_\theta||^2]\,\mathrm d t
+\hat w_1(A,t) \|\Delta v_\theta\|^2]\,\mathrm d t
 \tag{50}
 $$
 
@@ -796,14 +796,14 @@ If anyone really *did* read this carefully (thank you so much), he/she would def
 >
 > $$
 > \mathcal S_\mathrm{policy}(\theta) := -\mathbb E_Q[A M_1(\theta)]
-> = \mathbb E_Q \left[A \int_0^1 \sqrt{2 \tilde w_{1-r}} \Delta v_\theta^\top \mathrm d W_r + A \int_0^1 \tilde w_{1-r} ||\Delta v_\theta||^2 \mathrm d r\right]
+> = \mathbb E_Q \left[A \int_0^1 \sqrt{2 \tilde w_{1-r}} \Delta v_\theta^\top \mathrm d W_r + A \int_0^1 \tilde w_{1-r} \|\Delta v_\theta\|^2 \mathrm d r\right]
 > \tag{48}
 > $$
 
-We kept a second order amount $||\Delta v_\theta||^2$ in $M_1$ but we expanded $\exp(M_1)$ only to the first order. Expanding $\exp(M_1)$ to the second order ($1+M_1+\frac 12 M_1^2$) yields:
+We kept a second order amount $\|\Delta v_\theta\|^2$ in $M_1$ but we expanded $\exp(M_1)$ only to the first order. Expanding $\exp(M_1)$ to the second order ($1+M_1+\frac 12 M_1^2$) yields:
 
 
-> Disclaimer: 0814 did not derive the surrogate's form in this way. It simply shows that the gradient of the exact loss $\nabla_\theta \mathbb E [\exp(M_1(\theta)) A] = \nabla_\theta \mathbb E [M_1(\theta)A]$ given $\exp(M_1) \approx 1$. Normally this would be a sufficient claim to show that the surrogate is a legitimate loss equivalent. Yet an important factor that remains throughout section 2 is the second order $||\Delta v_\theta||^2$, so that second order curvature matters, especially when 0814 explicitly acknowledges the 'off-policy term'.
+> Disclaimer: 0814 did not derive the surrogate's form in this way. It simply shows that the gradient of the exact loss $\nabla_\theta \mathbb E [\exp(M_1(\theta)) A] = \nabla_\theta \mathbb E [M_1(\theta)A]$ given $\exp(M_1) \approx 1$. Normally this would be a sufficient claim to show that the surrogate is a legitimate loss equivalent. Yet an important factor that remains throughout section 2 is the second order $\|\Delta v_\theta\|^2$, so that second order curvature matters, especially when 0814 explicitly acknowledges the 'off-policy term'.
 
 ## 3. Beyond PPO-style
 There are far more RL algorithms (usually older ones) that this framework does not discuss/cover.
