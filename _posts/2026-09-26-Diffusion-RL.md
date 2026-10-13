@@ -303,7 +303,7 @@ $$
 \tag{31}
 $$
 
-where $v_\text{base}$ is replaced by $v_\text{old}$ because we assume the diffusion model (, which is exactly trained to fit $v_\text{base}$) is sufficiently capable to represent the conditional expected velocity field associated with its own generations (namely $v_\text{base}$).
+where $v_\text{base}$ is replaced by $v_\text{old}$ because we assume the diffusion model (, which is exactly trained to fit $v_\text{base}$) is sufficiently capable to represent the conditional expected velocity field associated with its own generations (namely $v_\text{base}$). (Yet more recent work like [DiffusionART](https://arxiv.org/abs/2610.12572) discussed whether we can take this substitution for granted.)
 
 **To sum up, 0814 identified two different value gradient estimators.** The stochastic estimator identifies which Brownian kick in the sampling process created the good image, while the deterministic estimator pulls the model velocity directly to align with the those that generated great endpoints.
 
@@ -834,14 +834,6 @@ I am actually thinking of a comparison between DPO KTO (CaPO/IPO) NFT and possib
 
 
 > Ends here.
-
-$$
-\begin{equation}
-E = mc^2
-(\#eq:energy)
-\end{equation}
-$$
-As shown in equation \@ref(eq:energy), mass and energy are related
 
 
 ---
