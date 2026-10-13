@@ -14,7 +14,7 @@ This is still a developing draft. But welcome to take a look anyway.
 
 ## 0. Foreword
 
-This blog is largely inspired by [**Designing Reinforcement Learning for Diffusion Models: A Unified Path-Space View**](https://www.arxiv.org/pdf/2608.14430), which I might casually abbreviate to '0814' later. I would say it led me to actively exploring the field of Diffusion RL.
+This blog is largely inspired by [**Designing Reinforcement Learning for Diffusion Models: A Unified Path-Space View**](https://www.arxiv.org/pdf/2608.14430) (NeurIPS 2026), which I might casually abbreviate to '0814' later. I would say it led me to actively exploring the field of Diffusion RL.
 
 > Why write this blog?
 
@@ -303,7 +303,7 @@ $$
 \tag{31}
 $$
 
-where $v_\text{base}$ is replaced by $v_\text{old}$ because the proposal policy $Q$ is usually an older version of the model in training, making $v_\text{old}$ a good approximation to $v_\text{base}$.
+where $v_\text{base}$ is replaced by $v_\text{old}$ because we assume the diffusion model (, which is exactly trained to fit $v_\text{base}$) is sufficiently capable to represent the conditional expected velocity field associated with its own generations (namely $v_\text{base}$).
 
 **To sum up, 0814 identified two different value gradient estimators.** The stochastic estimator identifies which Brownian kick in the sampling process created the good image, while the deterministic estimator pulls the model velocity directly to align with the those that generated great endpoints.
 
@@ -515,7 +515,7 @@ $$
 \begin{array}{ccc}
 \text{Flow-GRPO}
 &
-\longleftrightarrow
+\longrightarrow
 &
 \displaystyle
 \widehat{\nabla V}^{\mathrm{sto}}
@@ -525,7 +525,7 @@ $$
 \\[12pt]
 \text{AWM}
 &
-\longleftrightarrow
+\longrightarrow
 &
 \displaystyle
 \widehat{\nabla V}^{\mathrm{det}}
@@ -537,7 +537,7 @@ $$
 
 The first asks which **random reverse-process perturbation** (therefore written with $r$) happened to correlate with terminal reward. The second uses diffusion's known forward corruption kernel (therefore written with $t$) to ask which **endpoint-specific velocity residual** is associated with terminal reward.
 
-They might look like very different algorithms because they target at different random variables during training. Under the first-order path-space analysis, however, both are ways of estimating the same local object $\nabla V$.
+They might look like very different algorithms because they target at different random variables during training. Under the first-order path-space analysis, however, both happen to be ways of estimating the same object $\nabla V$.
 
 ## 2. Beyond first order: the quadratic term
 
@@ -786,6 +786,24 @@ $$
 
 For a training example, the preferred displacement is therefore $A_{\mathrm{NFT}}d/\beta$: toward its conditional velocity when $A_{\mathrm{NFT}}>0$. The quadratic is **always positive**. The positive quadratic ensures the loss has curvature $2\beta^2$ with respect to the predicted velocity. Negative feedback sets a finite target instead of rewarding an arbitrarily large distance from $v$. (Compare this with AWM $\hat w_1=\frac{A}{\Delta t}$ (signed, follows $A$), NFT's quadratic term follows the concept of displacement energy cost more closely. This is why you don't see an additional KL in NFT while that regularizer is needed for AWM.)
 
+### 2.5 ... Wait a second
+
+We have walked through the derivations and insights of 0814 (mostly, except for the KDE Value gradient estimator they introduced; and I am not planning to write about it).
+
+If anyone really *did* read this carefully (thank you so much), he/she would definitely notice the awkward replacement at Eq. 48.
+
+> To obtain a more tractable local form, replace $\exp(M_1)$ by $1+M_1$ and drop the $\theta$-independent term $-\mathbb E_Q[A]$. Write the resulting loss to as  $\mathcal S_{\mathrm{policy}}$ (to minimize):
+>
+> $$
+> \mathcal S_\mathrm{policy}(\theta) := -\mathbb E_Q[A M_1(\theta)]
+> = \mathbb E_Q \left[A \int_0^1 \sqrt{2 \tilde w_{1-r}} \Delta v_\theta^\top \mathrm d W_r + A \int_0^1 \tilde w_{1-r} ||\Delta v_\theta||^2 \mathrm d r\right]
+> \tag{48}
+> $$
+
+We kept a second order amount $||\Delta v_\theta||^2$ in $M_1$ but we expanded $\exp(M_1)$ only to the first order. Expanding $\exp(M_1)$ to the second order ($1+M_1+\frac 12 M_1^2$) yields:
+
+
+> Disclaimer: 0814 did not derive the surrogate's form in this way. It simply shows that the gradient of the exact loss $\nabla_\theta \mathbb E [\exp(M_1(\theta)) A] = \nabla_\theta \mathbb E [M_1(\theta)A]$ given $\exp(M_1) \approx 1$. Normally this would be a sufficient claim to show that the surrogate is a legitimate loss equivalent. Yet an important factor that remains throughout section 2 is the second order $||\Delta v_\theta||^2$, so that second order curvature matters, especially when 0814 explicitly acknowledges the 'off-policy term'.
 
 ## 3. Beyond PPO-style
 There are far more RL algorithms (usually older ones) that this framework does not discuss/cover.
@@ -816,6 +834,16 @@ I am actually thinking of a comparison between DPO KTO (CaPO/IPO) NFT and possib
 
 
 > Ends here.
+
+$$
+\begin{equation}
+E = mc^2
+(\#eq:energy)
+\end{equation}
+$$
+As shown in equation \@ref(eq:energy), mass and energy are related
+
+
 ---
 OMG section 1 is way too long but I admit that's how I understand this whole thing bit by bit and I have little idea how to shorten that.
 
@@ -830,7 +858,7 @@ IGO is probably a sequel that will never come. I heard that from some really the
 - KTO
 - DPO
 - RAM's perspective
-- OPD /OPSD probably
+- OPD /OPSD (connection with ReFL and NFT) probably
 - under the perspective of Information Geometric Optimization (this is interesting but quite far from practical use)
 
 <!-- {% endcapture %}{% include math-markdown.html content=math_content %} -->
