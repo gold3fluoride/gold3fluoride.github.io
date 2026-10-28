@@ -20,9 +20,13 @@ This blog is largely inspired by [**Designing Reinforcement Learning for Diffusi
 
 I was amazed by [**DiffusionNFT**](https://arxiv.org/abs/2509.16117) for its clean formulation and how a policy is dragged linearly towards a preferred distribution in its training process. However as I search for surveys on RL for post-training diffusion models, most papers I get are either [outdated surveys](https://arxiv.org/abs/2311.01223) not covering these methods, or surveys about how DM plays a role in RL - not at all relevant to my curiosity. Why can one diffusion RL algorithm look like REINFORCE on an SDE trajectory, while another looks like supervised regression on analytically noised endpoints and both are called *'RL'*? And that's why 0814 felt so inspiring - it answers that question gracefully, placing recent methods together in one paper and providing an insightful explanation for viewing them. **In this blog I try to write down my thoughts while learning about 0814 and exploring neighboring methods not covered in this paper**. (Disclaimer: This is not a formal survey of any kind. I will only draw comparisons between methods that intrigued me.)
 
-(09/26/26: Found one newer survey, updated Nov. 2025. [XueZeyue/Awesome-Visual-Generation-Alignment-Survey](https://github.com/XueZeyue/Awesome-Visual-Generation-Alignment-Survey).)
-
 (10/18/26: The topic of this survey is probably what I am looking for, but it is, from my point of view, not very insightful. [Diffusion RL Survey Oct. 15th](www.arxiv.org/abs/2610.21539))
+
+Useful links:
++ [Flow-Factory (easy T2I RL training)](https://github.com/X-GenGroup/Flow-Factory)
++ [Awesome-Visual-Generation-Alignment-Survey](https://github.com/XueZeyue/Awesome-Visual-Generation-Alignment-Survey) (Outdated, updated Nov. 2025)
++ [Awesome Diffusion Flow RL](https://github.com/AquaHorseM/Awesome-Diffusion-Flow-RL)
+
 
 > Errors are possible. I apologize for possible mistakes and welcome any form of comments / corrections / suggestions.
 
@@ -543,13 +547,20 @@ They might look like very different algorithms because they target at different 
 
 ## 2. From local policy improvement to finite-update objectives
 
-### 2.1 First order isn't enough: examples
+> **A roadmap for Section 2:** Section 2 will take a slightly different route from the mathematical explanation in 0814, as observing a common structure (subsections 2.1 to 2.3) likely comes first, and then the mathematical justification (centered around the Girsanov theorem, subsections 2.4 to 2.5) follows.
 
-Section 1 has mainly discussed about the question of 'where to move' *around the proposal*, but most RL algorithms are famously 'not purely on-policy'. That is, real algorithms do not take infinitesimal steps; they minimize a loss over many updates. Once finite steps matter, the quadratic part of the loss matters.
+### 2.1 First order isn't enough: what AWM and NFT actually optimize
 
-We have already seen one example without paying much attention to it. In Eqs. 39-40, we differentiated AWM's squared matching objective at $v_\theta=v_{\mathrm{old}}$. What disappeared when we took that derivative?
+Section 1 focused on the question of *where to move* around the proposal policy, which is a purely first-order (infinitesimal) question. However, practical RL algorithms are rarely purely on-policy, i.e. they do not take a single infinitesimal step and resample, but instead minimize a surrogate loss over multiple finite updates. Once we take finite steps away from the proposal $v_{\mathrm{old}}$, the **quadratic part** of the loss starts to matter just as much as the linear gradient.
 
-Let $\Delta v_\theta=v_\theta-v_{\mathrm{old}}$, $d=v-v_{\mathrm{old}}$, and $s(t)=(1-t)/t$. The signed matching surrogate discussed in Section 1 expands as
+In fact, we already stepped over a quadratic term in Section 1 without paying much attention to it. In Eqs. 39–40, we differentiated AWM's squared matching objective at $v_\theta = v_{\mathrm{old}}$. What disappeared when we evaluated that derivative at zero displacement?
+
+To see the algebra clearly, let's give short names to the three quantities from the end of Section 1:
+* $\Delta v_\theta := v_\theta - v_{\mathrm{old}}$ is our finite policy displacement from the rollout model,
+* $d := v - v_{\mathrm{old}}$ is the target velocity residual from Eq. 31, and
+* $s(t) := \frac{1-t}{t}$ is the theoretical ELBO time weight.
+
+Expanding AWM's signed matching loss around $v_{\mathrm{old}}$ gives:
 
 <a id="eq-awm-expansion"></a>
 
@@ -560,14 +571,14 @@ $$
 &=\mathbb E\left[
 -2A w(t)d^\top\Delta v_\theta
 +A w(t)\|\Delta v_\theta\|^2
-\right]+C.
+\right]+C,
 \end{aligned}
 \tag{43}
 $$
 
-Here and below, $C$ denotes a term independent of $\theta$ during the update. The linear term is the reward-correlated residual we identified in Section 1. The quadratic term has zero first derivative at $\Delta v_\theta=0$, which is why it did not appear in that analysis. Its coefficient is signed: for a negative advantage, this individual matching loss rewards moving farther from the target.
+where $C$ collects terms independent of $\theta$. The first term is the linear, reward-correlated residual we already studied in Section 1. The second term is quadratic in $\Delta v_\theta$: its first derivative vanishes at $\Delta v_\theta = 0$, which is why it was invisible to our local analysis in Section 1.5. Notice a crucial problem with this quadratic term when we take finite steps: **its coefficient $A w(t)$ is signed.** Whenever a trajectory has a negative advantage ($A < 0$), the quadratic term turns concave, actively rewarding the network for moving $\Delta v_\theta$ infinitely far away from the target.
 
-On the other hand [DiffusionNFT](https://arxiv.org/abs/2509.16117)'s objective also looks like regression, but it makes a different choice away from the proposal. Use $\rho\in[0,1]$ for NFT's normalized reward ($r$ in the original paper to avoid confusion), and define $A_{\mathrm{NFT}}=2\rho-1$. Let $\beta>0$ be NFT's mixing parameterand its two implicit policies are
+Now compare this with [**DiffusionNFT**](https://arxiv.org/abs/2509.16117), the paper that originally sparked my interest in this topic. On the surface, NFT also looks like velocity regression, but it constructs its loss via two implicit policies so that the behavior away from $v_{\mathrm{old}}$ is completely different. Let $\rho \in [0,1]$ denote NFT's normalized reward (written as $r$ in the original paper, renamed here to avoid clashing with sampling time $r=1-t$), define the centered advantage $A_{\mathrm{NFT}} := 2\rho - 1 \in [-1, 1]$, and let $\beta > 0$ be NFT's mixing parameter:
 
 <a id="eq-nft-objective"></a>
 
@@ -585,7 +596,7 @@ v_\theta^-&=(1+\beta)v_{\mathrm{old}}-\beta v_\theta
 \tag{44}
 $$
 
-For one training example, this gives
+Expanding a single training example in terms of $\Delta v_\theta$ and $d$ reveals why this two-branch setup is so clean:
 
 <a id="eq-nft-expansion"></a>
 
@@ -600,7 +611,7 @@ l_{\mathrm{NFT}}
 \tag{45}
 $$
 
-The two branches contribute the same quadratic coefficient and opposite cross terms. Completing the square makes the effect clear:
+Because $\rho + (1-\rho) = 1$, the two branches contribute the **exact same positive quadratic coefficient** $\beta^2$, while their cross terms subtract to give $\rho - (1-\rho) = A_{\mathrm{NFT}}$. Completing the square makes the geometry unmistakable:
 
 <a id="eq-nft-target"></a>
 
@@ -613,18 +624,20 @@ l_{\mathrm{NFT}}
 \tag{46}
 $$
 
-From this equation, the preferred displacement is $A_{\mathrm{NFT}}d/\beta$: toward its conditional velocity when the normalized advantage is positive, and away when it is negative. The quadratic term ensures that the curvature with respect to the predicted velocity is always $2\beta^2 I$.
+Look at what Eq. 46 is doing: whether the advantage is positive or negative, the loss is a strictly convex bowl with constant positive curvature $2\beta^2 I$, pulling the displacement $\Delta v_\theta$ toward a finite target $\frac{A_{\mathrm{NFT}}}{\beta}d$ (toward $v$ when $A_{\mathrm{NFT}} > 0$, and linearly away from $v$ to a bounded distance when $A_{\mathrm{NFT}} < 0$).
 
-| Matching surrogate | Linear term | Quadratic coefficient |
+| Matching surrogate | Linear term (1st order) | Quadratic coefficient (2nd order) |
 | --- | --- | --- |
-| AWM | $-2A w(t)d^\top\Delta v_\theta$ | $A w(t)$, signed |
-| NFT | $-2\beta A_{\mathrm{NFT}}d^\top\Delta v_\theta$ | $\beta^2>0$ |
+| **AWM** | $-2A w(t)d^\top\Delta v_\theta$ | $A w(t)$ *(signed: unstable for $A<0$)* |
+| **DiffusionNFT** | $-2\beta A_{\mathrm{NFT}}d^\top\Delta v_\theta$ | $\beta^2 > 0$ *(always positive)* |
 
-**The first-order analysis identifies the reward-correlated residual, but does not determine the quadratic coefficient.** This is the question Section 2 will explore.
+**In short: our first-order analysis from Section 1 explains why AWM and NFT share the same linear term, but says nothing about why they differ in the quadratic term.**
 
 ### 2.2 The observed linear-quadratic design space
 
-And here is, in my point of view, the main contribution of 0814: an abstraction that organizes these choices into a common training form. Written as a loss to minimize, the template is
+Once you write AWM (Eq. 43) and NFT (Eq. 45) side by side like that, a common algebraic template practically jumps off the page. Bothlosses are linear-quadratic functions of the velocity displacement $\Delta v_\theta$: a linear term aligned with our value-gradient estimator $\widehat{\nabla V}_t$, plus a quadratic penalty on $\|\Delta v_\theta\|^2$.
+
+Organizing existing methods into this shared template is, in my view, the central practical contribution of 0814. Written as a continuous-time loss to minimize, the unified surrogate is:
 
 <a id="eq-unified-surrogate"></a>
 
@@ -640,9 +653,9 @@ $$
 \tag{47}
 $$
 
-> The sampler dependence of $\hat w_2$ is suppressed in the notation.
+*(Here $\hat w_2$ can also depend on the sampler schedule $\eta_t$, which is suppressed in the notation.)*
 
-For the deterministic estimator in Eq. 31, $\widehat{\nabla V}^{\mathrm{det}}=-s(t)Ad$. The AWM expansion in [Eq. 43](#eq-awm-expansion) therefore has coefficients $\hat w_1=A w(t)$ and $\hat w_2=2w(t)/s(t)$ under a uniform-time integral convention. For NFT, dividing by the positive constant $\beta^2$ gives
+Let's verify that AWM and NFT drop straight into Eq. 47 by simple algebra. Recall from Eq. 31 that the deterministic estimator is $\widehat{\nabla V}^{\mathrm{det}} = -s(t)Ad$. For NFT, dividing Eq. 45 by the positive constant $\beta^2$ gives:
 
 <a id="eq-nft-framework"></a>
 
@@ -660,41 +673,41 @@ $$
 \tag{48}
 $$
 
-So AWM and NFT fit this template by direct algebra, up to constants. The whole design space can be described as $(\eta_t\text{ (the samplr)},v_{\mathrm{base}},\widehat{\nabla V}_t,\hat w_1,\hat w_2)$. The table in 0814 collects several methods in these coordinates:
+Thus, every algorithm in this family can be specified by five coordinates: **$(\eta_t, v_{\mathrm{base}}, \widehat{\nabla V}_t, \hat w_1, \hat w_2)$**. The table in 0814 maps existing methods into this exact coordinate system:
 
 ![table of methods]({{ '/assets/diffusionrl/methodtable.png' | relative_url }})
 
-The columns are respectively:
+Reading across the columns gives us a clean taxonomy of design axes:
+- **$\eta_t$ (the sampler):** Which reverse process supplies the training states (SDE vs. ODE)?
+- **$v_{\mathrm{base}}$ (the anchor):** What defines zero displacement ($\Delta v_\theta = v_\theta - v_{\mathrm{base}}$)? For path-ratio methods, it is the rollout policy $v_{\mathrm{old}}$. For the exact forward-process identity (Eq. 29), it is the true conditional mean $\mathbb E_Q[v\mid x_t,c]$ - replacing that mean with $v_{\mathrm{old}}$ is an approximation that relies on the model already fitting its own generations well.
+- **$\widehat{\nabla V}_t$ (the improvement direction):** Do we use the high-variance stochastic estimator $\widehat{\nabla V}^{\mathrm{sto}}$ or the lower-variance deterministic estimator $\widehat{\nabla V}^{\mathrm{det}}$?
+- **$\hat w_1(A,t)$ (the quadratic weight):** What is the sign and strength of the quadratic displacement term $\|\Delta v_\theta\|^2$?
+- **$\hat w_2(t)$ (the linear weight):** How strongly do we push along the value-gradient estimate $\widehat{\nabla V}_t$ at timestep $t$?
 
-- $\eta_t$, or more generally the sampler: which distribution supplies the states?
-- $v_{\mathrm{base}}$: what defines zero displacement? For a path-ratio comparison, it is the velocity of the proposal process. For the exact forward-estimator identity, it is the conditional mean $\mathbb E[v\mid x_t,c]$ under the endpoint-and-corruption joint distribution. Using $v_{\mathrm{old}}$ for that mean requires the approximation discussed after Eq. 31; the model merely being an older checkpoint does not establish it.
-- $\widehat{\nabla V}_t$: how is the local value gradient estimated?
-- $\hat w_1$: what is the sign and strength of the quadratic displacement term?
-- $\hat w_2$: how strongly is the improvement direction applied?
+> **A quick bookkeeping note on $\Delta t$ in the table:** Because Eq. 47 is written as a continuous integral $\int_0^1 [\dots]\,\mathrm d t$, the weights $\hat w_1$ and $\hat w_2$ are *time densities*. When an implementation samples discrete timesteps of bin width $\Delta t$, a single bin contributes $\left[\hat w_2(t)\widehat{\nabla V}_t^\top\Delta v_\theta+\hat w_1(A,t)\|\Delta v_\theta\|^2\right]\Delta t$. Therefore, to match the per-step discrete losses in Eq. 43 (AWM) and Eq. 48 (NFT), 0814's table divides the discrete coefficients by $\Delta t$:
+>
+> <a id="eq-bin-coefficients"></a>
+>
+> $$
+> \begin{array}{c|cc}
+> & \hat w_1 & \hat w_2\\
+> \hline
+> \mathrm{AWM} & A w(t)/\Delta t & 2w(t)/[s(t)\Delta t]\\
+> \mathrm{NFT}/\beta^2 & 1/\Delta t & 2/[\beta s(t)\Delta t]
+> \end{array}
+> \tag{49}
+> $$
+>
+> Setting $w(t)=1$ in the AWM row immediately reproduces the table entries $A/\Delta t$ and $2/[s(t)\Delta t]$.
 
-> A normalization detail when reading the table: a discrete timestep loss and a continuous-time integrand can differ by a bin width. If the contribution of a bin is written as $[\hat w_2\widehat{\nabla V}^{\top}\Delta v_\theta+\hat w_1\|\Delta v_\theta\|^2]\Delta t$, define $a_t=\hat w_1\Delta t$ and $b_t=\hat w_2\Delta t$. Matching this contribution to the unweighted per-example losses above gives
+### 2.3 Weighting is part of the algorithm (and why $w(t)=1$ works)
 
-<a id="eq-bin-coefficients"></a>
+Putting all these methods into a single template does not mean all choices of $(\hat w_1, \hat w_2)$ behave equally well in practice:
 
-$$
-\begin{array}{c|cc}
-& a_t & b_t\\
-\hline
-\mathrm{AWM} & A w(t) & 2w(t)/s(t)\\
-\mathrm{NFT}/\beta^2 & 1 & 2/[\beta s(t)]
-\end{array}
-\tag{49}
-$$
+1. **The sign of $\hat w_1$ governs stability:** Because NFT uses a positive constant $\hat w_1 = 1/\Delta t$, its quadratic term always acts as a genuine trust-region penalty anchoring $v_\theta$ near $v_{\mathrm{old}}$. AWM's signed weight $\hat w_1 = A w(t)/\Delta t$ flips sign for $A < 0$, which explains why AWM needs an explicit external KL regularizer to avoid collapsing, and why unconstrained AWM is notoriously [unstable during training](https://github.com/X-GenGroup/Flow-Factory/blob/main/guidance/algorithms.md#training-stability).
+2. **The product $\hat w_2(t)\widehat{\nabla V}_t$ governs gradient variance across $t$:** Even when an estimator is unbiased in expectation, practical updates use noisy single-sample Monte Carlo estimates. This finally resolves the puzzle we noticed at the end of Section 1.5: why AWM found empirically that a flat weight $w(t)=1$ works much better than the theoretical ELBO weight $w(t) = s(t) = \frac{1-t}{t}$.
 
-Thus the table's AWM entries for $w(t)=1$ are $\hat w_1=A/\Delta t$ and $\hat w_2=2/[s(t)\Delta t]$; NFT's are $1/\Delta t$ and $2/[\beta s(t)\Delta t]$.
-
-### 2.3 Weighting is part of the algorithm
-
-The common form does not make all choices of coefficients equivalent. In particular, NFT's positive quadratic is closer to the intuitive idea of a displacement penalty than AWM's signed quadratic, (so that's probably why you do not see an extra KL term in NFT while AWM needs one.)
-
-Additionally what works in expectation are not exempt from noisy Monte Carlo updates for algorithms to work well in practical situations. This sheds light on the AWM observation around Eqs. 37-42: simpler weights such as $w(t)=1$ can work better than the ELBO weight $w(t)=s(t)=(1-t)/t$:
-
-To see what is actually being scaled, let $K_\theta(x_t,t)=\partial v_\theta(x_t,t)/\partial\theta$. With the proposal quantities held fixed, a timestep bin contributes
+To see what actually scales the parameter update at timestep $t$, let $K_\theta(x_t,t) := \frac{\partial v_\theta(x_t,t)}{\partial\theta}$ be the network Jacobian. Holding proposal quantities fixed, a single timestep bin of width $\Delta t$ contributes the parameter gradient:
 
 <a id="eq-parameter-gradient"></a>
 
@@ -703,32 +716,33 @@ $$
 \left[
 \hat w_2(t)\widehat{\nabla V}_t
 +2\hat w_1(A,t)\Delta v_\theta
-\right]
+\right].
 \tag{50}
 $$
 
-to the parameter gradient. What matters is the **effective weighted estimator**, together with its integration or sampling weight and the network Jacobian, rather than a coefficient viewed in isolation.
-
-For AWM, the ELBO choice gives the sample integrand
+Notice that $\hat w_2(t)$ never acts alone. It multiplies $\widehat{\nabla V}_t$. If we use AWM with the theoretical ELBO weight $w(t) = s(t) = \frac{1-t}{t}$, then $\hat w_2 = \frac{2}{\Delta t}$ looks harmlessly constant, but the actual per-example loss integrand (up to $1/\Delta t$) is:
 
 <a id="eq-elbo-weighting"></a>
 
 $$
 s(t)A\left[
 \|\Delta v_\theta\|^2-2d^\top\Delta v_\theta
+\right]
+= \frac{1-t}{t}A\left[
+\|\Delta v_\theta\|^2-2d^\top\Delta v_\theta
 \right].
 \tag{51}
 $$
 
-Both terms inherit the explicit $1/t$ near the clean endpoint. This can amplify sampling noise and concentrate updates at small $t$. Setting $w(t)=1$ removes that factor from both terms. In the framework coordinates, $\hat w_2=2/s(t)$ may itself look singular near the opposite endpoint, but its product with $\widehat{\nabla V}^{\mathrm{det}}=-s(t)Ad$ is simply $-2Ad$. NFT similarly gives $-2A_{\mathrm{NFT}}d/\beta$ after normalization, with a constant positive quadratic coefficient.
+Because $s(t) = \frac{1-t}{t}$ blows up as $t \to 0$, both the linear update and the quadratic term inherit a $1/t$ singularity near the clean image endpoint, massively amplifying Monte Carlo noise at small $t$. 
 
-This is how I read 0814's scale-bounded weighting principle: inspect the combined update coefficients, including the factors already inside the estimator.
+By contrast, when we set $w(t) = 1$ in AWM (or use NFT), the weight $\hat w_2 = \frac{2}{s(t)\Delta t}$ looks singular on paper only because it is written to **cancel out** the $-s(t)$ factor sitting inside $\widehat{\nabla V}^{\mathrm{det}} = -s(t)Ad$! Their product is simply $\Delta t\,\hat w_2(t)\widehat{\nabla V}^{\mathrm{det}} = -2Ad$, which is completely bounded across all $t \in [0,1]$. This is the essence of 0814's **scale-bounded weighting principle**: what must stay bounded is the *combined effective coefficient* multiplying the noisy residual $d$ and displacement $\Delta v_\theta$, not $\hat w_2$ in isolation.
 
-So the weights are part of the algorithm. Why, then, does the particular factor $s(t)$ arise in the theoretical derivation at all? This is a good place to return to the quadratic term in Girsanov. It supplies a probabilistic interpretation of one instance of the template. What that interpretation does and does not pin down is the subject of 2.5.
+### 2.4 Where did that quadratic term come from in theory?
 
-### 2.4 Where the derived quadratic comes from
+Up to this point, everything in Section 2 has been pure algebra on existing losses. Now let's ask the theoretical question we postponed from Section 1.2: **Why did the awkward factor $\frac{1-t}{t}$ and the signed quadratic $A\|\Delta v_\theta\|^2$ appear in 0814's theoretical derivation in the first place?**
 
-Section 1 did not need the particular flow-matching SDE: the path-space argument works for any pair of SDEs with the same diffusion coefficient. To read the quadratic in velocity coordinates, we now need the SDE's drift and diffusion. With sampling time $r=1-t$,
+To answer that, we return to the Girsanov path-space log-ratio (Eq. 11) and write it in velocity coordinates. For a flow-matching SDE in sampling time $r = 1-t$, the model velocity $v_\theta(x_t,t)$ enters the reverse drift linearly:
 
 $$
 \begin{aligned}
@@ -739,7 +753,7 @@ g_r^2&=\frac{2t\eta_t}{1-t},\qquad t=1-r,\\
 \tag{52}
 $$
 
-The only model-dependent thing we will use is the factor $1+\eta_t$. The model velocity enters the drift linearly, and everything in $c_r$ is shared by $P_\theta$ and $Q$. Comparing two processes with the same initial distribution and diffusion schedule, with $Q$ generated by $v_{\mathrm{base}}$,
+Since $c_r(y_r)$ is shared by $P_\theta$ and the proposal $Q$ (generated by $v_{\mathrm{base}}$), the drift difference is simply proportional to the velocity displacement:
 
 $$
 \Delta\mu_r
@@ -749,9 +763,9 @@ $$
 \tag{53}
 $$
 
-For $v_{\mathrm{base}}=v_{\mathrm{old}}$ and $\eta_t=1$, this is $\Delta\mu=-2\Delta v$, the conversion used in Eq. 41.
+*(For $v_{\mathrm{base}} = v_{\mathrm{old}}$ and $\eta_t = 1$, this gives $\Delta\mu_r = -2\Delta v_\theta$, the exact conversion we used in Eq. 41.)*
 
-We now want the log-ratio in velocity coordinates. Girsanov's formula needs the ratio $\Delta\mu_r/g_r$, so let us compute it rather than define anything:
+Now let's compute the normalized drift change $\frac{\Delta\mu_r}{g_r}$ that appears inside Girsanov's theorem (Eq. 11):
 
 $$
 \frac{\Delta\mu_r}{g_r}
@@ -759,7 +773,7 @@ $$
 =-\sqrt{\frac{(1+\eta_t)^2(1-t)}{4t\eta_t}}\,\Delta v_\theta.
 $$
 
-The scalar in front is the only combination of the SDE parameters that survives. Call it $\sqrt{2\widetilde w_t}$:
+If we collect that scalar prefactor into $\widetilde w_t$, Girsanov's linear and quadratic integrands become:
 
 $$
 \widetilde w_t:=\frac{(1+\eta_t)^2(1-t)}{4t\eta_t},
@@ -771,7 +785,9 @@ $$
 \tag{54}
 $$
 
-Substituting into Eq. 11 gives the log-ratio in velocity coordinates:
+*(Notice that for standard SDE sampling $\eta_t = 1$, $\widetilde w_t$ is once again $\frac{1-t}{t} = s(t)$! Intuitively, because the sampling noise $g_r$ shrinks to zero as $t \to 0$, any fixed velocity change $\Delta v_\theta$ becomes infinitely distinguishable against the vanishing noise near the clean endpoint.)*
+
+Substituting Eq. 54 into Eq. 11 gives the exact log-likelihood ratio $M_1(\theta) := \log\frac{\mathrm dP_\theta}{\mathrm dQ}$ in velocity coordinates:
 
 $$
 \begin{aligned}
@@ -785,11 +801,10 @@ M_1(\theta)
 \tag{55}
 $$
 
-Read the two terms. The first is the noise-exploration term: it asks whether the drift change aligns with the Brownian increments. The second is the quadratic term. It is **not** a Taylor expansion of the reward. It is the energy of the proposal gap—the price of $Q$ differing from $P_\theta$. That is why its coefficient is $\widetilde w_t$, and why it vanishes when $\Delta v_\theta=0$.
+Look at the two pieces of $M_1(\theta)$: the first is the stochastic Brownian alignment term, and the second is the quadratic path-energy cost of moving $P_\theta$ away from $Q$.
 
-For $\eta_t=1$, $\widetilde w_t=s(t)$. The large coefficient near $t=0$ reflects the small sampling noise there: a drift change becomes more distinguishable relative to that noise. (The derivation assumes $\eta_t>0$; an ODE sampler with $\eta_t=0$ has to be converted into an SDE first.)
-
-Now the part I got wrong on my first read of 0814. I will show it because the mistake is the point. I read Prop. 1 as a statement about the objective, replaced $e^{M_1}$ by $1+M_1$, and got the surrogate
+Now, how do we get from the true policy objective $\mathbb E_Q\left[e^{M_1(\theta)}A\right]$ to 0814's linear-quadratic loss? 
+On my very first read of 0814, prompted by phrasing like *"explicitly ... exactly obtained"*, I thought we simply linearized the exponential via $e^{M_1} \approx 1 + M_1$ inside the expectation and flipped the sign to minimize a surrogate loss:
 
 $$
 \begin{aligned}
@@ -805,16 +820,7 @@ $$
 \tag{56}
 $$
 
-**This is not 0814's derivation. It gives the right first-order term for the wrong reason, and it is not valid as an objective-level statement.** It is, however, the most natural wrong reading: the one the notation $=_\theta$ in Prop. 1 invites. I keep it because the place where it breaks is exactly where the quadratic's status becomes ambiguous. Section 2.5 will show where.
-
-0814's actual route is different, but—this is the point I want to make—fundamentally similar. Prop. 1 is stated as an equality of losses up to a $\theta$-independent constant, but its proof establishes the equality of gradients in the limit $\epsilon\to0$. The statement is stronger than the proof. Under the trust-region condition $|\exp(M_1(\theta^-))-1|<\epsilon$, we have $e^{M_1}\approx1$, so
-
-$$
--\mathcal L_{\mathrm{policy}}(\theta)
-=-\mathbb E_Q[A]-\mathbb E_Q[A M_1(\theta)]+O(M_1^2),
-$$
-
-and dropping the constant and the $O(M_1^2)$ term gives the same $\mathcal S_{\log}$ as Eq. 56. The difference is the justification: the expansion is local, not a Taylor expansion of the objective. The same martingale identity used in Eq. 18 rewrites the stochastic term as $-\mathbb E_Q\int\nabla V_r^\top\Delta\mu_r\,\mathrm d r$, and changing variables gives
+To be fair to 0814, Proposition 1 instead invokes a local trust-region condition $|\exp(M_1(\theta^-)) - 1| < \epsilon$ to argue that the *gradients* of $-\mathbb E_Q[e^{M_1}A]$ and $\mathcal S_{\log}(\theta)$ match in the limit $\epsilon \to 0$, and then applies our martingale identity (Eq. 18) to rewrite the Brownian integral in terms of $\nabla V_t$:
 
 $$
 \mathcal S_{\log}(\theta)
@@ -826,23 +832,19 @@ $$
 \tag{57}
 $$
 
-This rewriting is exact for $\mathcal S_{\log}$; $\mathcal S_{\log}$ itself is only locally faithful to the objective. It gives one instance of [Eq. 47](#eq-unified-surrogate), with $\hat w_2=1+\eta_t$ and $\hat w_1=A\widetilde w_t$. Substituting the deterministic estimator at $\eta_t=1$ recovers the coefficients in [Eq. 51](#eq-elbo-weighting).
+Sure enough, Eq. 57 is an instance of the unified template (Eq. 47) with $\hat w_2 = 1 + \eta_t$ and $\hat w_1 = A\widetilde w_t$ (which at $\eta_t=1$ reproduces AWM's ELBO-weighted loss in Eq. 51). 
 
-0814 calls the linear and quadratic components the "on-policy" and "off-policy" terms. The naming is about the proposal, not about the objective: the quadratic vanishes when $v_{\mathrm{old}}=v_\theta$, and appears when the update leaves the proposal. The first term supplies the local improvement signal. The second is the price of the displacement.
+**But here is the crack in the story.** Whether you arrive at Eq. 57 via my naive $e^{M_1} \approx 1 + M_1$ shortcut or via 0814's Proposition 1, the proof only establishes **first-order gradient agreement** at the proposal ($\Delta v_\theta \to 0$). Yet the paper's prose goes much further: it calls the quadratic term $A\widetilde w_t\|\Delta v_\theta\|^2$ an *"off-policy regulariser"* that *"anchors"* $v_\theta$ to $v_{\mathrm{base}}$. 
 
-> Before reward weighting, the quadratic is a nonnegative path energy. After multiplication by signed $A$, it is not necessarily a positive control cost.
+That is a second-order claim about how the loss behaves *away* from the proposal. And as we already saw, once the nonnegative Girsanov energy $\widetilde w_t\|\Delta v_\theta\|^2$ is multiplied by a signed advantage $A$, it isn't even a positive penalty when $A < 0$! Why did a first-principles Girsanov derivation produce a broken second-order regularizer?
 
-That observation is the crack in the story. The derivation is a **gradient** statement: it tells us how the surrogate's gradient at the proposal relates to the policy gradient. But the paper's framing goes further. It calls the quadratic an "off-policy regulariser" and says it "anchors" $v_\theta$ to $v_{\mathrm{base}}$. That is a claim about the term's **function**, not just its gradient. 0814 never explicitly discusses curvature or the Hessian, but this is a curvature-like claim. The next section asks whether the derivation supports it.
+### 2.5 The Girsanov derivation breaks at second order
 
-### 2.5 The derivation fixes the gradient, not the curvature
+The reason is simple: **keeping the quadratic term inside $M_1$ while dropping the quadratic term of the exponential $e^{M_1} = 1 + M_1 + \frac{1}{2}M_1^2 + \dots$ is an inconsistent Taylor expansion.** It sneaks a second-order term ($\|\Delta v_\theta\|^2$) into a first-order approximation while leaving behind another second-order term of the exact same magnitude.
 
-The derivation above is a first-order expansion in $M_1$. It gives the gradient of the surrogate at the proposal. It does not give the objective's second-order term. 0814 never explicitly discusses curvature or the Hessian, so this is not a claim about a missing equation. It is a claim about a word: the paper calls the quadratic an "off-policy regulariser" and says it "anchors" $v_\theta$ to $v_{\mathrm{base}}$. A quadratic regulariser is a penalty on displacement, and the coefficient of that penalty is a curvature-like object. The question is whether the derivation gives the quadratic enough structure to do that job.
-
-To count orders cleanly, forget the velocity parameterization and perturb the drift along a fixed adapted field $h_r$:
+To count orders cleanly without carrying flow-matching constants around, let's perturb the drift along a fixed adapted direction $h_r$ by a scalar step size $\lambda$ (so $\mu_\lambda = \mu_Q + \lambda h$):
 
 $$
-\mu_\lambda=\mu_Q+\lambda h,
-\qquad
 Z:=\int_0^1\frac{h_r^\top}{g_r}\,\mathrm dW_r,
 \qquad
 C_h:=\int_0^1\frac{\|h_r\|^2}{g_r^2}\,\mathrm d r,
@@ -851,9 +853,7 @@ M_\lambda=\lambda Z-\frac{\lambda^2}{2}C_h.
 \tag{58}
 $$
 
-Everything on the right is evaluated along the fixed proposal $Q$; $\lambda$ is the perturbation size. For the flow-matching case, $h_r=-(1+\eta_t)\Delta v_\theta$, so $Z$ is exactly the stochastic integral in Eq. 55 and $C_h$ is twice the quadratic term. Nothing is lost in the abstraction.
-
-Assume the likelihood ratios are valid and the moments permit expansion under the expectation. The true likelihood ratio and the surrogate expand as
+Here $\lambda Z$ is our $O(\lambda)$ stochastic integral and $\frac{\lambda^2}{2}C_h$ is our $O(\lambda^2)$ Girsanov quadratic energy. Now compare the true second-order expansion of the likelihood ratio $e^{M_\lambda}$ against the log-surrogate $1 + M_\lambda$:
 
 $$
 e^{M_\lambda}
@@ -864,7 +864,7 @@ e^{M_\lambda}
 \tag{59}
 $$
 
-The first line is the exponential; the second is the object we actually kept. For a fixed advantage $A$,
+Multiplying by the terminal advantage $A$ and taking expectations under $Q$, the true policy objective $J(\lambda) := \mathbb E_Q[A e^{M_\lambda}]$ and the log-surrogate $\widetilde J(\lambda) := \mathbb E_Q[A(1+M_\lambda)]$ expand as:
 
 $$
 \begin{aligned}
@@ -873,23 +873,20 @@ J(\lambda)
 +\frac{\lambda^2}{2}\mathbb E_Q[A(Z^2-C_h)]
 +o(\lambda^2),\\
 \widetilde J(\lambda)
-:=\mathbb E_Q[A(1+M_\lambda)]
 &=J(0)+\lambda\mathbb E_Q[AZ]
 -\frac{\lambda^2}{2}\mathbb E_Q[AC_h].
 \end{aligned}
 \tag{60}
 $$
 
-The first-order terms agree by construction. The second-order terms do not. Subtracting,
+Look at the $O(\lambda^2)$ terms in Eq. 60. The first-order gradients $\mathbb E_Q[AZ]$ at $\lambda = 0$ match by construction, **but the second-order terms differ by $\frac{\lambda^2}{2}\mathbb E_Q[AZ^2]$**:
 
 $$
 \widetilde J(\lambda)-J(\lambda)
 =-\frac{\lambda^2}{2}\mathbb E_Q[AZ^2]+o(\lambda^2).
 $$
 
-The surrogate is missing $\lambda^2\mathbb E_Q[AZ^2]/2$, and that term is of the **same order** as the quadratic energy it does keep. This is the "sneaking in a second-order term" move in its simplest form: we keep a term of order $\lambda^2$ while only justifying the expansion to order $\lambda$. A first-order story with a second-order object. It is a Taylor expansion truncated at first order, with the $x^2$ term left in.
-
-Ito isometry is what makes the mistake easy to miss. Without the reward weight,
+Why is this missing $Z^2$ term so easy to overlook? Because without the advantage weight $A$, Itô isometry guarantees that $\mathbb E_Q[Z^2] = \mathbb E_Q[C_h]$, so the unweighted expectation vanishes. **However, multiplying by the terminal advantage $A$ breaks that cancellation**, because $A(y_1)$ depends on the Brownian path and is generally correlated with $Z^2$:
 
 $$
 \mathbb E_Q[Z^2-C_h]=0,
@@ -898,10 +895,9 @@ $$
 \tag{61}
 $$
 
-The unweighted quadratic has zero mean, which is why the energy term looks canonical. The reward weight breaks the cancellation: $A$ is a function of the terminal $x_0$, which depends on the whole path, including the Brownian increments that make up $Z$. So $A$ and $Z^2$ are correlated, and the term that would have cancelled the energy no longer does.
+We can see this failure in two tiny toy examples, one with a properly centered advantage, and one with a constant baseline shift:
 
-The gap is not an artifact of a particular reward. A centered quadratic reward already shows it. Let $\mathrm dY_r=\lambda\,\mathrm d r+\mathrm dW_r$, $Y_0=0$, and $A(y)=y^2-1$. Under the zero-drift proposal, $Z=W_1$, $C_h=1$, and $\mathbb E_Q[A]=0$. Yet
-
++ **Centered quadratic reward ($A$ has zero mean, yet the surrogate misses the curvature completely):** Let $\mathrm dY_r=\lambda\,\mathrm d r+\mathrm dW_r$ with $Y_0=0$, and take the centered advantage $A(y)=y^2-1$. Under the proposal ($\lambda=0$), $Z=W_1$, $C_h=1$, and $\mathbb E_Q[A]=0$. Yet
 $$
 J(\lambda)=\mathbb E[(W_1+\lambda)^2-1]=\lambda^2,
 \qquad
@@ -909,10 +905,9 @@ J(\lambda)=\mathbb E[(W_1+\lambda)^2-1]=\lambda^2,
 =\mathbb E[(W_1^2-1)^2]=2.
 \tag{62}
 $$
+Here the true objective $J(\lambda) = \lambda^2$ is strictly convex, driven entirely by the omitted $AZ^2$ correlation. Meanwhile, in the log-surrogate $\widetilde J(\lambda)$, both $\mathbb E_Q[AZ] = 0$ and $\mathbb E_Q[AC_h] = \mathbb E_Q[A] = 0$ vanish, so the surrogate is completely flat.
 
-The true objective has a nonzero second-order term; the log-ratio surrogate is flat: both $\mathbb E_Q[AZ]$ and $\mathbb E_Q[AC_h]$ vanish. This is the cleanest demonstration that the surrogate's quadratic is not the objective's second-order term—there is no reward baseline to blame.
-
-A constant reward shows the opposite failure. If the fixed function multiplying the likelihood ratio is $A\equiv a\ne0$, then
++ **Constant reward shift ($J$ is flat, yet the surrogate hallucinates signed curvature):** Conversely, suppose $A \equiv a \ne 0$ is a constant baseline. Then the true expected reward is independent of $\theta$, while the log-surrogate becomes proportional to the KL divergence:
 
 $$
 J(P_\theta)=a,
@@ -923,17 +918,14 @@ J(P_\theta)=a,
 \tag{63}
 $$
 
-The expected reward is flat, while the surrogate retains KL-like curvature. Here the omitted $Z^2$ term cancels the energy term exactly in the true objective. If advantages are centered, a constant reward gives $A=0$ and both objectives are flat; the point of this diagnostic is that the log surrogate's curvature depends on an additive reward baseline, whereas the true reward does not. The centered example in Eq. 62 shows that the gap also exists without a nonzero baseline.
+In the true objective, the omitted $Z^2$ term cancels $C_h$ so that shifting the reward baseline has zero effect. In the log-surrogate, dropping $Z^2$ leaves behind a fake curvature $a D_{\mathrm{KL}}(Q\|P_\theta)$ whose sign flips with the sign of $a$!
 
-So what survives? The gradient does. Prop. 1 is a correct statement about the gradient at the proposal, under a trust-region condition. The theorem is not wrong. What is wrong is the step from that theorem to the prose: from "the quadratic appears in a gradient representation" to "the quadratic is an off-policy regulariser that anchors the model." The first is a statement about a derivative. The second is a statement about the term's function—a curvature-like claim. The derivation does not establish the second.
+### Summary of Section 1 & 2
 
-The slide is easy to make because the template is written as a loss. Once the quadratic sits inside a loss, it looks like part of the objective. But the derivation only matched gradients; an object-level equality would need the $Z^2$ term. That is the step from "gradient agreement" to "exact form" that the prose makes and the proof does not. The route is different from my wrong derivation in 2.4; the structure of the slide is the same.
-
-This is a defensible error rather than a fatal one, because 0814 relaxes the coefficients into a design space anyway. Eq. 18 treats $\hat w_1,\hat w_2$ as arbitrary weight functions; the derived values are one instantiation, not a necessity. Once the coefficients are relaxed, the quadratic's job is whatever the designer wants it to be. The practical stakes are low. But the story still matters, because it shapes how people read the quadratic: as a penalty with a principled curvature, rather than as the price of leaving the proposal. It also shapes how people design weights: if the coefficient is a derived curvature, deviating from it looks like a hack; if it is a proposal-gap penalty, deviating from it is a design choice.
-
-**The honest reading is the second one.** The quadratic is the energy of the proposal gap. Its coefficient is a design choice; the derived value is a default. This is why the scale-bounded principle is a design constraint rather than a consequence of the derivation, and why $w(t)=1$ is not a discrepancy. It is a different, bounded trust region.
-
-> This does not invalidate 0814's framework; it explains why the framework has a free $\hat w_1$. Once the quadratic is read as the price of leaving the proposal rather than the curvature of the reward, bounding it is a stability requirement, not a derived identity.
+Stepping back, this makes the relationship between 0814's theory and its unified table much clearer:
+1. **The first-order Girsanov + martingale story (Section 1) is rock solid.** It explains why both trajectory-level REINFORCE ($\widehat{\nabla V}^{\mathrm{sto}}$) and endpoint velocity matching ($\widehat{\nabla V}^{\mathrm{det}}$) estimate the exact same policy improvement direction $\nabla V_t$ around the proposal.
+2. **The second-order Girsanov story (Section 2.4) is an artifact of incomplete truncation.** Keeping the $O(\lambda^2)$ Girsanov energy $A C_h$ while dropping the $O(\lambda^2)$ outer-product term $A Z^2$ does not give the true curvature of the RL objective, nor does it yield a valid trust-region anchor (since $A C_h$ flips sign when $A < 0$).
+3. **And that makes 0814's empirical design space ($\mathcal S_{\mathrm{unified}}$, Eq. 47) more defensible.** Once we recognize that first-principles path-space theory only pins down the *linear improvement direction* and does not dictate the quadratic coefficient, deviating from the Girsanov weights ($\hat w_1 = A\widetilde w_t$) is not an ad-hoc hack but a mathematical necessity. Choosing a strictly positive quadratic anchor ($\hat w_1 > 0$, as in DiffusionNFT) and scale-bounded timestep weights ($w(t)=1$) is how we supply the well-behaved trust region that the first-order gradient alone cannot provide. 😽
 
 
 ## 3. Beyond PPO-style
@@ -959,12 +951,14 @@ Interestingly reviewers of NFT on OpenReview also noted a similarity between KTO
 
 (DPPO?)
 
+(I have procrastinated this so long that DiffusionART came out)
+
 ### 3.4 Empirical analysis
 
 I am actually thinking of a comparison between DPO KTO (CaPO/IPO) NFT and possibly more, an analogy to the huggingface blog in early 2024 that compared DPO KTO and IPO.
 
 
-
+(Connection with RAM)
 
 > Ends here.
 
