@@ -896,7 +896,6 @@ $$
 >  \mathbb E_Q[Z^2-C_h]=0,
 >  \qquad\text{but generally}\qquad
 >  \mathbb E_Q[A(Z^2-C_h)]\ne0.
->  \tag{61}
 >  $$
 
 We can see this difference between $\widetilde J(\lambda)$ and $J(\lambda)$ in two tiny toy examples:
@@ -908,7 +907,7 @@ We can see this difference between $\widetilde J(\lambda)$ and $J(\lambda)$ in t
   \qquad
   \mathbb E_Q[A(Z^2-C_h)]
   =\mathbb E[(W_1^2-1)^2]=2.
-  \tag{62}
+  \tag{61}
   $$
 
   Here the true objective $J(\lambda) = \lambda^2$ is strictly convex, driven entirely by the omitted $AZ^2$ correlation. Meanwhile, in the log-surrogate $\widetilde J(\lambda)$, both $\mathbb E_Q[AZ] = 0$ and $\mathbb E_Q[AC_h] = \mathbb E_Q[A] = 0$ vanish, so the surrogate is completely flat.
@@ -921,7 +920,7 @@ We can see this difference between $\widetilde J(\lambda)$ and $J(\lambda)$ in t
   \mathcal S_{\log}(\theta)
   =-a\mathbb E_Q[M_1(\theta)]
   =aD_{\mathrm{KL}}(Q\|P_\theta).
-  \tag{63}
+  \tag{62}
   $$
 
   In the true objective, the omitted $Z^2$ term cancels $C_h$ so that shifting the reward baseline has zero effect. In the log-surrogate, dropping $Z^2$ leaves behind a fake curvature $a D_{\mathrm{KL}}(Q\|P_\theta)$ whose sign flips with the sign of $a$!
