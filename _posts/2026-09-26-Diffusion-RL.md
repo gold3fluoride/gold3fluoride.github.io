@@ -66,6 +66,11 @@ $$
 
 (The initial noise distribution $p_1(x_1)$ cancels out in $P_\theta$ and $Q$. **This is simply importance sampling and the direct source of Flow-GRPO's per step optimization.** But let's dive deeper with 0814 before returning to any specific method.)
 
+<figure class="figure w-100">
+  <img src="{{ '/assets/diffusionrl/diffusion-path-space.png' | relative_url }}" class="figure-img img-fluid" alt="Two panels of denoising trajectories. Left: paths sampled from Q. Right: the same paths colored by the path likelihood ratio P_theta/Q on a log scale, with a highlighted bundle ending near A(x0).">
+  <figcaption class="figure-caption">Toy 1D diffusion with exact discrete Gaussian transition ratios. Left: trajectories sampled from the proposal \(Q\). Right: the same trajectories, with color encoding the path likelihood ratio \(w(\tau)=P_\theta(\tau)/Q(\tau)\) on a log scale. The highlighted bundle reaches a small endpoint neighborhood where the terminal advantage \(A(x_0)\) is evaluated.</figcaption>
+</figure>
+
 And now it's time to replace the abstract $p$'s and $q$'s with continuous diffusion SDEs. Note that as $Q$ is an older version of the model, the stochasticity schedule stays fixed throughout the training as a selected implementation design before any training occurs at all. Thus we can assert that the diffusion coefficient $g$'s are the same for $P$ and $Q$.
 
 **For convenience in discussing Ito calculus and avoiding $\mathrm{d}t<0$ problems, I follow the conventions of Appendix C of 0814, where $r := 1-t$ and $y_r = x_t$** Recall the target form; under this $r$ convention it would be:
@@ -674,7 +679,7 @@ $$
 
 Thus, every algorithm in this family can be specified by five coordinates: **$(\eta_t, v_{\mathrm{base}}, \widehat{\nabla V}_t, \hat w_1, \hat w_2)$**. The table in 0814 maps existing methods into this exact coordinate system:
 
-![table of methods]({{ '/assets/diffusionrl/methodtable.png' | relative_url }})
+![table of methods](/assets/diffusionrl/methodtable.png)
 
 This gives us a clean taxonomy and design space:
 - **$\eta_t$ (the sampler):** Which reverse process supplies the training states (SDE vs. ODE)?

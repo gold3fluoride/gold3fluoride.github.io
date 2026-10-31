@@ -63,6 +63,22 @@
     margin: 1rem 0;
 }
 
+/* Figures with explicit captions */
+.blog-content figure {
+    margin: 1.25rem 0;
+}
+
+.blog-content figure img {
+    display: block;
+    margin: 0 0 0.5rem;
+}
+
+.blog-content figcaption {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #6c757d;
+}
+
 /* Multi-column image layouts */
 .blog-content .row img {
     margin: 0.5rem 0;
