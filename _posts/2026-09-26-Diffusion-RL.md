@@ -64,7 +64,7 @@ $$
 \mathbb{E}_{P_\theta(\tau)} A(x_0(\tau)) = \mathbb{E}_{Q(\tau)}{[\frac{P_\theta(\tau)}{Q(\tau)}A(x_0(\tau))]} = \mathbb{E}_{Q(\tau)} [\prod_t \frac{p_\theta (x_{t-\Delta t}  \mid  x_t)}{q(x_{t-\Delta t}  \mid  x_t)} A(x_0(\tau))] \tag{4}
 $$
 
-(The initial noise distribution $p_1(x_1)$ cancels out in $P_\theta$ and $Q$. **This is simply importance sampling and the direct source of Flow-GRPO's per step optimization.** But let's dive deeper with 0814 before returning to any specific method.)
+(The initial noise distribution $p_1(x_1)$ cancels out in $P_\theta$ and $Q$. **This is simply importance sampling (see image below) and the direct source of Flow-GRPO's per step optimization.** But let's dive deeper with 0814 before returning to any specific method.)
 
 <figure class="figure w-100">
   <img src="{{ '/assets/diffusionrl/diffusion-path-space.png' | relative_url }}" class="figure-img img-fluid" alt="Two panels of denoising trajectories. Left: paths sampled from Q. Right: the same paths colored by the path likelihood ratio P_theta/Q on a log scale, with a highlighted bundle ending near A(x0).">
@@ -173,14 +173,19 @@ $$
 V_r := \mathbb{E}_Q [A(y_1(\tau)) \mid y_r],
 $$
 
-interpreted as the value of the current noisy middle state $y_r$. As a conditional expectation, this $V_r$ is **the best terminal advantage estimate we have**. And upon that since the process can be read as Markovian, the current state $y_r$ is a sufficient statistic (so taking the condition $y_r$ simply equals to taking the condition $\mathcal{F}_r$). In formal maths language (martingales and filters), for $r<s$ (and naturally $\mathcal{F}_r \subset \mathcal{F}_s$):
+interpreted as the value of the current noisy middle state $y_r$. As a conditional expectation, this $V_r$ is **the best terminal advantage estimate we have**. And upon that since the process can be read as Markovian, the current state $y_r$ is a sufficient statistic (so taking the condition $y_r$ simply equals to taking the condition $\mathcal{F}_r$). In formal maths language (martingales and filtrations), for $r<s$ (and naturally $\mathcal{F}_r \subset \mathcal{F}_s$):
 
 $$
 \mathbb{E}_Q[V_s \mid \mathcal{F}_r] = \mathbb{E}_Q[\mathbb{E}_Q[A(y_1) \mid \mathcal{F}_s] \mid \mathcal{F}_r]
 = \mathbb{E}_Q [A(y_1) \mid \mathcal{F}_r] = V_r \tag{14}
 $$
 
-by the tower property. This is simply the formal way of saying $V_r$ is **a martingale**. Its mean is not supposed to have a drift in any direction; in other words, expressed in an SDE, its drift term **must be 0**.
+by the tower property. This is simply the formal way of saying $V_r$ is **a martingale**. Its mean is not supposed to have a drift in any direction; in other words, expressed in an SDE, its drift term **must be 0**. (A martingale example visualized below.)
+
+<figure class="figure w-100">
+  <img src="{{ '/assets/diffusionrl/martingale-value-landscape.png' | relative_url }}" class="figure-img img-fluid" alt="Top: a blue-orange value landscape over state and sampling time with Brownian paths; two highlighted paths end at positive and negative rewards. Bottom: the same paths in value space, fluctuating around a dashed zero expectation.">
+  <figcaption class="figure-caption">Top: the value landscape \(V_r(y)=\mathbb{E}_Q[A(y_1)\mid y_r=y]\) for the solvable toy \(dy_r=\mathrm{d}W_r\), \(A(y_1)=\mathrm{sign}(y_1)\), \(y_0=0\). Bottom: the same paths in value space. \(V_r(y_r)\) fluctuates along each path, but \(\mathbb{E}_Q[\mathrm{d}V_r\mid\mathcal{F}_r]=0\); the horizontal dashed line in the lower panel is the population expectation \(\mathbb{E}_Q[V_r]=0\). The highlighted paths are selected by endpoint sign from unconditioned draws. The full Ito drift of \(V\) vanishes, so \(\mathrm{d}V_r=\partial_yV_r\,\mathrm{d}W_r\).</figcaption>
+</figure>
 
 Meanwhile [Ito's Lemma](https://en.wikipedia.org/wiki/It%C3%B4%27s_lemma) tells us, with $V_r = V_r(y_r)$:
 
@@ -549,6 +554,11 @@ $$
 The first asks which **random reverse-process perturbation** (therefore written with $r$) happened to correlate with terminal reward. The second uses diffusion's known forward corruption kernel (therefore written with $t$) to ask which **endpoint-specific velocity residual** is associated with terminal reward.
 
 They might look like very different algorithms because they target at different random variables during training. Under the first-order path-space analysis, however, both happen to be ways of estimating the same object $\nabla V$.
+
+<figure class="figure w-100">
+  <img src="{{ '/assets/diffusionrl/estimator-comparison.png' | relative_url }}" class="figure-img img-fluid" alt="Two panels compare value-gradient estimators. Left: one step of a noisy denoising trajectory is magnified into its drift and random noise components; positive terminal advantage reinforces the noise direction. Right: advantage reweighting increases the right-hand endpoint mode and moves the endpoint mean right. Velocity arrows run from the two mean endpoints to the fixed x_t; the tilted arrow is shorter, showing the lower mean forward velocity.">
+  <figcaption class="figure-caption">Two routes to the value gradient. Left: terminal advantage weights a sampled reverse-SDE noise kick. Right: favoring high-advantage clean endpoints shifts their conditional mean forward velocity. The positive density tilt moves the endpoint mean \(m_\lambda\) toward the fixed \(x_t\); the velocity arrow from \(m_\lambda\) to \(x_t\) is shorter than the baseline arrow from \(m_0\), so \(\delta v<0\). </figcaption>
+</figure>
 
 ## 2. From local policy improvement to finite-update objectives
 
